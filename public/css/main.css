@@ -3,7 +3,6 @@
     --default-font-size-landscape:40vh;
 }
 
-
 /* Vertical - like the phone */
 @media screen and (orientation: portrait) {
   .scoretext {
@@ -45,7 +44,7 @@
     text-align-last: center;
   }
 }
-
+/* 
 .menubtn {
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
@@ -61,7 +60,7 @@
 .menuimg{
   height:15px;
   width:15px;
-}
+} */
 
 html,
 body {
@@ -71,3 +70,54 @@ body {
   font-family: Calibri, sans-serif;
 }
 
+.modal {
+  width: 300px;
+  height: 300px;
+  position: absolute;
+  left: 50%;
+  top: 50%; 
+  margin-left: -150px;
+  margin-top: -150px;
+  background-color: rgb(206, 191, 191); 
+  border:5px solid rgb(103, 80, 165);
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.disp {
+  width:10%;
+  height:20%;
+  background-color: rgb(206, 191, 191); 
+  border:1px solid rgb(103, 80, 165);
+  border-radius: 1px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
+  float:left;
+  font-weight: bold;
+}
+
+p{
+  font-style: italic;
+  
+}
+
+input{
+  padding: 5px 5px; 
+  margin: 5px; 
+  border: 1px solid rgb(103, 80, 165);
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
+
+}
+
+input[type=button]{
+  background: rgb(212, 200, 245);
+}
+
+.top{
+  position:absolute;
+  top:0%;
+  left:0%;
+  width:100%;
+  height: 0px;
+}
