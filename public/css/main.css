@@ -85,14 +85,16 @@ body {
 }
 
 .disp {
-  width:10%;
-  height:20%;
+  width:20%;
   background-color: rgb(206, 191, 191); 
   border:1px solid rgb(103, 80, 165);
   border-radius: 1px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
   float:left;
   font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 3vh;
 }
 
 p{
@@ -120,4 +122,20 @@ input[type=button]{
   left:0%;
   width:100%;
   height: 0px;
+}
+
+select {
+  /* margin: 50px; */
+  /* width: 150px; */
+  padding: 4px 4px;
+  font-size: 16px;
+  border: 1px solid rgb(103, 80, 165);
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
+  /* height: 34px; */
+  /* -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; */
+  /* background: url(https://stackoverflow.com/favicon.ico) 96% / 15% no-repeat #EEE; */
 }
