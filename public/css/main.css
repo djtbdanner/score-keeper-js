@@ -1,6 +1,11 @@
 :root {
     --default-font-size-portrait:25vh;
     --default-font-size-landscape:40vh;
+    --default-border-color: rgb(103, 80, 165);
+    /* --default-background-color: red; */
+    --default-background-color: rgb(206, 191, 191); 
+    --default-button-color: rgb(212, 200, 245);
+    --default-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
 }
 
 /* Vertical - like the phone */
@@ -12,7 +17,6 @@
     padding-right: 0;
     margin:0;
     font-size:  var(--default-font-size-portrait);
-    color: rgb(30, 32, 19);
     text-align-last: center;
   }
   .header {
@@ -78,18 +82,18 @@ body {
   top: 50%; 
   margin-left: -150px;
   margin-top: -150px;
-  background-color: rgb(206, 191, 191); 
-  border:5px solid rgb(103, 80, 165);
+  background-color: var(--default-background-color) ; 
+  border:5px solid var(--default-border-color);
   border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
+  box-shadow: var(--default-shadow);
 }
 
 .disp {
   width:20%;
-  background-color: rgb(206, 191, 191); 
-  border:1px solid rgb(103, 80, 165);
+  background-color: var(--default-background-color) ;
+  border:1px solid var(--default-border-color);
   border-radius: 1px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
+  box-shadow: var(--default-shadow);
   float:left;
   font-weight: bold;
   text-align: center;
@@ -98,22 +102,25 @@ body {
 }
 
 p{
+  padding-left:5px;
+  padding-right:5px;
   font-style: italic;
-  
 }
 
 input{
   padding: 5px 5px; 
   margin: 5px; 
-  border: 1px solid rgb(103, 80, 165);
+  border: 1px solid var(--default-border-color);
   background: white;
   border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
-
+  box-shadow: var(--default-shadow);
 }
 
 input[type=button]{
-  background: rgb(212, 200, 245);
+  background: var(--default-button-color);
+}
+input[type=submit]{
+  background: var(--default-button-color);
 }
 
 .top{
@@ -129,10 +136,10 @@ select {
   /* width: 150px; */
   padding: 4px 4px;
   font-size: 16px;
-  border: 1px solid rgb(103, 80, 165);
+  border: 1px solid var(--default-border-color);
   background: white;
   border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
+  box-shadow:var(--default-shadow)
   /* height: 34px; */
   /* -webkit-appearance: none;
   -moz-appearance: none;

@@ -7,6 +7,15 @@ let rooms = new Map();
 
 io.sockets.on('connect', (socket) => {
     console.log("initial connection ");
+    /// TODO -- don't do this mmK
+    // let room = new Room(`dave`);
+    // room.scores = undefined;
+    // rooms.set('dave', room);
+    // room = new Room(`jill`);
+    // room.scores = undefined;
+    // rooms.set('jill', room);
+    // this just a test
+
     socket.on('score-change', (data) => {
         try {
             const roomName = data.room;
@@ -34,7 +43,7 @@ io.sockets.on('connect', (socket) => {
                 throw new Error(`Could not find room or game: ${data}.`);
             }
             socket.join(data);
-            socket.emit(`score-change`, JSON.stringify(JSON.parse(room.scores)));
+            socket.emit(`join-room`, JSON.stringify(JSON.parse(room.scores)));
         } catch (error) {
             handleError(socket, error, data);
         }
@@ -44,6 +53,15 @@ io.sockets.on('connect', (socket) => {
         try {
             console.log(rooms);
             socket.emit('get-rooms', JSON.stringify(Array.from(rooms.keys())));
+        } catch (error) {
+            handleError(socket, error, data);
+        }
+    });
+    socket.on('is-room-available', (data) => {
+        try {
+            const room = rooms.get(data);
+            console.log(`checking if ${data} is available ${room===undefined}`);
+            socket.emit('is-room-available', {isAvailable:room===undefined});
         } catch (error) {
             handleError(socket, error, data);
         }

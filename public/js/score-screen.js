@@ -1,7 +1,6 @@
-function drawScreen(teamsList) {
+function drawScreen(teamsList, includeListeners) {
 
     let scorepage = ``;
-    // console.log(teamsList);
     let teamCount = teamsList.length;
 
     let root = document.documentElement;
@@ -53,7 +52,7 @@ function drawScreen(teamsList) {
 
     for (let i = 0; i < teamCount; i++) {
         let thisWidth = widthtop;
-      //  console.log(i + "   " + i / 2);
+        //  console.log(i + "   " + i / 2);
         if (teamCount === 3 && i > 1 || teamCount === 5 && i > 2 || teamCount === 7 && i > 3) { thisWidth = widthBottom; }
         scorepage += `<div id="div${i}" draggable = "true" style="background-color: ${teamsList[i].color}; width:${thisWidth}; height:${height};float:left;">`;
         scorepage += `<div class="header" id="headerdiv${i}" style="background-color: ${teamsList[i].textColor};">`;
@@ -65,13 +64,16 @@ function drawScreen(teamsList) {
     }
 
     /// temp
-    scorepage += `<input type="hidden" id="send-room" value="roomName" onClick="buildAndSendScore();" />`;
+    // scorepage += `<input type="hidden" id="send-room" value="roomName" onClick="buildAndSendScore();" />`;
     /// 
     let existing = document.getElementById("screen-div");
     // console.log(scorepage);
     existing.innerHTML = scorepage;
     existing.style.display = `block`;
-    addListeners();
+
+    if (includeListeners) {
+        addListeners();
+    }
 }
 
 function addListeners() {
@@ -87,7 +89,7 @@ function addListeners() {
             const sourceDiv = event.target;
             destination = document.elementFromPoint(event.pageX, event.pageY);
             // console.log(destination.id);
-            if (destination && destination.id !== sourceDiv.id){
+            if (destination && destination.id !== sourceDiv.id) {
                 swapDivs(destination, sourceDiv)
             }
             buildSendScoreFromScreen();
@@ -100,7 +102,7 @@ function addListeners() {
             var pageY = touchLocation.pageY;
             destination = document.elementFromPoint(pageX, pageY);
             // console.log(destination.id);
-            if (destination && destination.id !== sourceDiv.id){
+            if (destination && destination.id !== sourceDiv.id) {
                 swapDivs(destination, sourceDiv)
             }
             buildSendScoreFromScreen();
@@ -108,15 +110,15 @@ function addListeners() {
 
         scoretext.addEventListener('click', (event) => {
             const thisDiv = event.target
-            const {top,bottom} = getOffset(thisDiv);
-            const middle = top + .5*(bottom - top);
+            const { top, bottom } = getOffset(thisDiv);
+            const middle = top + .5 * (bottom - top);
             let adder = 1;
-            if (event.pageY > middle){
+            if (event.pageY > middle) {
                 adder = -1;
             }
             let val = parseInt(thisDiv.innerHTML);
             val = val + adder;
-            if (val < 0){
+            if (val < 0) {
                 val = 0;
             }
             thisDiv.innerHTML = val;
@@ -130,14 +132,14 @@ function getOffset(el) {
     const height = el.offsetHeight;
     const width = el.offsetWidth;
     return {
-      left: rect.left + window.scrollX,
-      top: rect.top + window.scrollY,
-      bottom:  rect.top + window.scrollY + height,
-      right: rect.left + window.screenX + width
+        left: rect.left + window.scrollX,
+        top: rect.top + window.scrollY,
+        bottom: rect.top + window.scrollY + height,
+        right: rect.left + window.screenX + width
     };
 }
 
-function swapDivs(destinationDiv, sourceDiv){
+function swapDivs(destinationDiv, sourceDiv) {
     const dest = destinationDiv.id.slice(-1);
     const source = sourceDiv.id.slice(-1);
     const destScoreDiv = document.getElementById(`div${dest}`);
@@ -159,12 +161,12 @@ function swapDivs(destinationDiv, sourceDiv){
 
     let color = destScoreDiv.style.backgroundColor;
     destScoreDiv.style.backgroundColor = sourceScoreDiv.style.backgroundColor;
-    sourceScoreDiv.style.backgroundColor =color;
+    sourceScoreDiv.style.backgroundColor = color;
 
     color = destHeaderDiv.style.backgroundColor;
     destHeaderDiv.style.backgroundColor = sourceHeaderDiv.style.backgroundColor;
-    sourceHeaderDiv.style.backgroundColor =color;
-    
+    sourceHeaderDiv.style.backgroundColor = color;
+
     color = destScoreText.style.color;
     destScoreText.style.color = sourceScoreText.style.color;
     sourceScoreText.style.color = color;
@@ -185,7 +187,7 @@ function buildSendScoreFromScreen() {
         const score = document.getElementById(`scoretext${d}`).innerHTML;
         const color = document.getElementById(`div${d}`).style.backgroundColor;
         const textColor = document.getElementById(`headerdiv${d}`).style.backgroundColor;
-        if (teamName){
+        if (teamName) {
             let theScore = {};
             theScore.teamName = teamName;
             theScore.score = score;
@@ -194,6 +196,6 @@ function buildSendScoreFromScreen() {
             scores.push(theScore);
         }
     }
-    const roomName = document.getElementById(`send-room`).value;
+    const roomName = document.getElementById(`room-name`).value;
     scoreChange(roomName, scores);
 }
