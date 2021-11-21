@@ -1,6 +1,6 @@
 // The primary socket processing on server side
 const io = require('../server').io
-const Room = require('./classes/Room');
+const Room = require('./classes/room');
 
 // rooms database :)
 let rooms = new Map();
