@@ -8,26 +8,48 @@ let rooms = new Map();
 io.sockets.on('connect', (socket) => {
     console.log("initial connection ");
     /// TODO -- don't do this mmm - K
-    //  let room = new Room(`dave`);
-    //  room.scores = `[{"teamName":"Dave","score":"0","color":"#ff0000","textColor":"#888888"},{"teamName":"Snakes","score":"0","color":"#00ff00","textColor":"#123456"},{"teamName":"Hawks","score":"0","color":"#0000ff","textColor":"#ffff00"},{"teamName":"Tired","score":"0","color":"#ff00ff","textColor":"#00ff00"},{"teamName":"Happy","score":"0","color":"#ffffff","textColor":"#000000"},{"teamName":"Tater","score":"0","color":"#ff5555","textColor":"#882288"},{"teamName":"Foofs","score":"0","color":"#ff0000","textColor":"#000000"},{"teamName":"Team","score":"0","color":"#777777","textColor":"#110022"}]`;
-    //  rooms.set('dave', room);
-    // room = new Room(`jill`);
-    // room.scores = `[{"teamName":"Dave","score":"0","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"}]`;
-    // rooms.set('jill', room);
+     let room = new Room(`8`);
+    //  room.scores = `[{"teamName":"Dave","score":"880","color":"#ff0000","textColor":"#888888"},{"teamName":"Snakes","score":"100","color":"#00ff00","textColor":"#123456"},{"teamName":"Hawks","score":"0","color":"#0000ff","textColor":"#ffff00"},{"teamName":"Tired","score":"0","color":"#ff00ff","textColor":"#00ff00"},{"teamName":"Happy","score":"0","color":"#ffffff","textColor":"#000000"},{"teamName":"Tater","score":"0","color":"#ff5555","textColor":"#882288"},{"teamName":"Foofs","score":"0","color":"#ff0000","textColor":"#000000"},{"teamName":"Team","score":"0","color":"#777777","textColor":"#110022"}]`;
+    //  rooms.set('8', room);
+    // room = new Room(`2`);
+    // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"}]`;
+    // rooms.set('2', room);
+    // room = new Room(`3`);
+    // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"}]`;
+    // rooms.set('3', room);
+    // room = new Room(`4`);
+    // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Don","score":"920","color":"green","textColor":"red"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"}]`;
+    // rooms.set('4', room);
+    // room = new Room(`5`);
+    // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Don","score":"920","color":"green","textColor":"red"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"}]`;
+    // rooms.set('5', room);
+    // room = new Room(`6`);
+    // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Don","score":"920","color":"green","textColor":"red"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"}]`;
+    // rooms.set('6', room);
+    // room = new Room(`7`);
+    // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Don","score":"920","color":"green","textColor":"red"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"}]`;
+    // rooms.set('7', room);
     // this just a test
 
-    socket.on('score-change', (data) => {
+socket.on('score-change', (data) => {
         try {
             const roomName = data.room;
             const scores = data.scores;
+            const isOwner = data.isOwner;
             let room = rooms.get(roomName);
             if (!room){
                 room = new Room(roomName);
+                socket.broadcast.emit('room-added');
             }
             room.scores = scores;
+            if (isOwner){
+                room.owner = socket.id;
+                socket.join(roomName);
+            }
+            console.log(JSON.stringify(rooms));
             rooms.set(roomName, room);
-            console.log(`broadcasting to room ${roomName}, scores ${JSON.stringify(scores)}`);
-            socket.to(roomName).emit(`score-change`, JSON.stringify(JSON.parse(scores)));
+            console.log(`broadcasting to room ${roomName}, scores ${JSON.stringify(scores), roomName}`);
+            socket.to(roomName).emit(`score-change`, {scores:JSON.stringify(scores), roomName} );
         } catch (error) {
             handleError(socket, error, data);
         }
@@ -57,11 +79,23 @@ io.sockets.on('connect', (socket) => {
             handleError(socket, error, data);
         }
     });
+    
     socket.on('is-room-available', (data) => {
         try {
             const room = rooms.get(data);
             console.log(`checking if ${data} is available ${room===undefined}`);
             socket.emit('is-room-available', {isAvailable:room===undefined});
+        } catch (error) {
+            handleError(socket, error, data);
+        }
+    });
+
+    socket.on('message-room', (data) => {
+        try {
+            const roomName = data.roomName;
+            const message = data.message;
+            console.log(`sending message to room  ${roomName} message ${message}`);
+            socket.to(roomName).emit('message-room', message);
         } catch (error) {
             handleError(socket, error, data);
         }
@@ -75,6 +109,11 @@ io.of("/").adapter.on("join-room", (room, id) => {
     console.log(`socket ${id} has joined room ${room}`);
 });
 io.of("/").adapter.on("leave-room", (room, id) => {
+    const abandonRoom = rooms.get(room);
+    if (abandonRoom && abandonRoom.owner === id){
+        const socket = io.sockets.sockets.get(id);
+        socket.to(room).emit(`backendError`, "The scorekeeper left or lost Internet connection. If game is still on, they can reconnect and you will still catch the score.");
+    }
     console.log(`socket ${id} has left room ${room}`);
 });
 io.of("/").adapter.on("delete-room", (room) => {
@@ -86,7 +125,7 @@ function handleError(socket, error, data) {
     try {
         console.log(`ERROR: ${error} - DATA: ${JSON.stringify(data)} - STACK: ${error.stack}`);
         console.error(error);
-        let errorMessage = `A stupid error [${error.message}] happened in processing. Not something we expected. If the server didn't go down, you may want to just start over. Sorry!`
+        let errorMessage = `A stupid error [${error.message}]. Not something we expected. If the server didn't go down, you may want to just start over. Sorry!`
         if (socket) {
             socket.emit('backendError', errorMessage);
         }

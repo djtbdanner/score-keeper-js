@@ -1,5 +1,31 @@
 async function buildEntryScreens() {
 
+    const storedScores = localStorage.getItem('scores');
+    const date = localStorage.getItem('scores-date');
+    const roomName = localStorage.getItem('room-name');
+    const isOwner = localStorage.getItem(`is-owner`);
+    if (storedScores && date && roomName) {
+        const dateToCompare = new Date(date);
+        if (isToday(dateToCompare)) {
+            if (confirm('Would you like to continue with the score you had earlier today?')) {
+                rebuildOldGame(roomName, storedScores);
+                return;
+            }
+        }
+    }
+
+    await buildInitialScreen();
+}
+
+async function processRoomAdded(){
+    if (document.getElementById(`initial-screen`)){
+        await buildInitialScreen();
+    } else {
+        console.log('someone added another game');
+    }
+}
+
+async function buildInitialScreen() {
     const rooms = await getAvailableRooms();
     let roomsList = ``;
     if (rooms) {
@@ -10,7 +36,7 @@ async function buildEntryScreens() {
     html += `<form><div id="initial-screen" class="modal">`;
     html += `<table cellpadding="0" cellspacing="0" width="100%" border="0">`;
     html += `<tr><td colspan="2" style = "text-align:center;">`;
-    html += `<p>Enter game name, add teams or players.</p>`
+    html += `<p>Enter game name, add teams or players.</p>`;
     html += `</td></tr>`;
     html += `<tr><td>`;
     html += `&nbsp; Game: `;
@@ -18,7 +44,7 @@ async function buildEntryScreens() {
     html += `<input type="text" maxlength="10" id="game-name" placeholder="GameName" onKeyUp="checkTeamName()" autofocus />`;
     html += `</td></tr>`;
     html += `<tr><td colspan="2" style = "text-align:center;">`;
-    html += `<span id = "game-msg-span">&nbsp</span>`
+    html += `<span id = "game-msg-span">&nbsp</span>`;
     html += `</td></tr>`;
     html += `<tr><td colspan="2" style = "text-align:center;">`;
     html += `<br><input type="submit" id="add-player-button" disabled="true" value="Add Team or Player" formaction="javascript:setRoomAddPlayer();" />`;
@@ -31,7 +57,19 @@ async function buildEntryScreens() {
     existing.style.display = `block`;
 }
 
+function rebuildOldGame(roomName, storedScores) {
+
+    document.getElementById(`room-name`).value = roomName;
+    document.getElementById(`room-owner`).value = "true";
+    const scores = JSON.parse(storedScores);
+    sendRoomMessage(roomName, 'Owner reconnected');
+    scoreChange(roomName, scores, true);
+    drawScreen(scores, true, roomName);
+}
+
 function setRoomAddPlayer() {
+
+    const selectedRoomName = document.getElementById(`game-name`).value;
     document.getElementById(`room-name`).value = document.getElementById(`game-name`).value;
     destroyElementNamed('initial-screen');
     addPlayerOrTeam(0);
@@ -58,9 +96,16 @@ function buildRoomList(availableRooms) {
 }
 
 function setRoomAddJoin(roomName) {
-    document.getElementById(`room-name`).value = roomName;
     destroyElementNamed('initial-screen');
-    joinRoom(roomName);
+    document.getElementById(`room-name`).value = roomName;
+    const storedRoomName = localStorage.getItem('room-name');
+    const storedScores = localStorage.getItem('scores');
+    if (roomName === storedRoomName && storedScores) {
+        rebuildOldGame(roomName, storedScores);
+        return;
+    } else {
+        joinRoom(roomName);
+    }
 }
 
 function addPlayerOrTeam(index) {
@@ -154,7 +199,7 @@ function addTeam(index) {
     html += `</div>`;
     let div = document.createElement(`div`);
     div.innerHTML = html;
-  //  document.getElementById("the-top").appendChild(div);
+    //  document.getElementById("the-top").appendChild(div);
     document.body.appendChild(div);
 
     let node = document.getElementById("addDiv" + index);
@@ -162,12 +207,12 @@ function addTeam(index) {
         node.parentNode.removeChild(node);
     }
 
-    if (index===7){
+    if (index === 7) {
         buildAndSendScore();
         return;
     }
 
-    addPlayerOrTeam(index+1);
+    addPlayerOrTeam(index + 1);
 }
 
 function buildAndSendScore() {
@@ -192,7 +237,7 @@ function buildAndSendScore() {
         scores.push(theScore);
 
     }
-    console.log(JSON.stringify(scores));
+    // console.log(JSON.stringify(scores));
     const roomName = document.getElementById(`room-name`).value;
     // console.log(`roomName = ${roomName}`);
     // console.log(`scores = ${scores}`);
@@ -204,8 +249,9 @@ function buildAndSendScore() {
             }
         }
     }
-    scoreChange(roomName, scores);
-    drawScreen(scores, true);
+    document.getElementById(`room-owner`).value = true;
+    scoreChange(roomName, scores, true);
+    drawScreen(scores, true, roomName);
 }
 
 async function checkTeamName() {
@@ -226,6 +272,16 @@ async function checkTeamName() {
     } else {
         addPlayerButton.disabled = true;
     }
+}
+
+const isToday = (someDate) => {
+    if (!someDate) {
+        return false;
+    }
+    const today = new Date()
+    return someDate.getDate() === today.getDate() &&
+        someDate.getMonth() === today.getMonth() &&
+        someDate.getFullYear() === today.getFullYear()
 }
 
 // function buildColorSelector(name, index) {
