@@ -82,13 +82,13 @@ function drawScreen(teamsList, includeListeners, roomName) {
         addListeners();
     }
 
-    // if (root.requestFullscreen) {
-    //     root.requestFullscreen();
-    // } else if (elem.webkitRequestFullscreen) {
-    //     root.webkitRequestFullscreen();
-    // } else if (elem.msRequestFullscreen) {
-    //     root.msRequestFullscreen();
-    // }
+    if (root.requestFullscreen) {
+        root.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+        root.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+        root.msRequestFullscreen();
+    }
 }
 
 function addListeners() {
