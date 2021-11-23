@@ -7,12 +7,12 @@ let rooms = new Map();
 
 io.sockets.on('connect', (socket) => {
     console.log("initial connection ");
-    /// TODO -- don't do this mmK
-    // let room = new Room(`dave`);
-    // room.scores = undefined;
-    // rooms.set('dave', room);
+    /// TODO -- don't do this mmm - K
+    //  let room = new Room(`dave`);
+    //  room.scores = `[{"teamName":"Dave","score":"0","color":"#ff0000","textColor":"#888888"},{"teamName":"Snakes","score":"0","color":"#00ff00","textColor":"#123456"},{"teamName":"Hawks","score":"0","color":"#0000ff","textColor":"#ffff00"},{"teamName":"Tired","score":"0","color":"#ff00ff","textColor":"#00ff00"},{"teamName":"Happy","score":"0","color":"#ffffff","textColor":"#000000"},{"teamName":"Tater","score":"0","color":"#ff5555","textColor":"#882288"},{"teamName":"Foofs","score":"0","color":"#ff0000","textColor":"#000000"},{"teamName":"Team","score":"0","color":"#777777","textColor":"#110022"}]`;
+    //  rooms.set('dave', room);
     // room = new Room(`jill`);
-    // room.scores = undefined;
+    // room.scores = `[{"teamName":"Dave","score":"0","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"}]`;
     // rooms.set('jill', room);
     // this just a test
 

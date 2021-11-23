@@ -1,5 +1,9 @@
 function drawScreen(teamsList, includeListeners) {
 
+    let existing = document.getElementById("screen-div");
+    existing.style.width = `100%`;
+    existing.style.height = `100%`;
+
     let scorepage = ``;
     let teamCount = teamsList.length;
 
@@ -48,26 +52,17 @@ function drawScreen(teamsList, includeListeners) {
         widthBottom = `25%`;
     }
 
-    // console.log(`teamCount: ${teamCount} + ${widthtop} = ${widthBottom}`)
-
     for (let i = 0; i < teamCount; i++) {
         let thisWidth = widthtop;
-        //  console.log(i + "   " + i / 2);
         if (teamCount === 3 && i > 1 || teamCount === 5 && i > 2 || teamCount === 7 && i > 3) { thisWidth = widthBottom; }
         scorepage += `<div id="div${i}" draggable = "true" style="background-color: ${teamsList[i].color}; width:${thisWidth}; height:${height};float:left;">`;
         scorepage += `<div class="header" id="headerdiv${i}" style="background-color: ${teamsList[i].textColor};">`;
-        scorepage += `<h1 class="headertext" id="headertext${i}" style="color:${teamsList[i].color}">${teamsList[i].teamName}</h1>`;
+        scorepage += `<p class="headertext" id="headertext${i}" style="color:${teamsList[i].color}">${teamsList[i].teamName}</p>`;
         scorepage += `</div>`;
         const s = teamsList[i].score; // Math.floor(Math.random() * (99 - 0 + 1)) + 0;
-        scorepage += `<h1 class="scoretext" id=scoretext${i} style="color:${teamsList[i].textColor}">${s}</h1>`;
+        scorepage += `<div class="scoretext" id=scoretext${i} style="color:${teamsList[i].textColor}">${s}</div>`;
         scorepage += `</div>`;
     }
-
-    /// temp
-    // scorepage += `<input type="hidden" id="send-room" value="roomName" onClick="buildAndSendScore();" />`;
-    /// 
-    let existing = document.getElementById("screen-div");
-    // console.log(scorepage);
     existing.innerHTML = scorepage;
     existing.style.display = `block`;
 
@@ -83,8 +78,7 @@ function addListeners() {
         if (!div) {
             break;
         }
-        const scoretext = document.getElementById(`scoretext${d}`);
-
+        
         div.addEventListener('dragend', (event) => {
             const sourceDiv = event.target;
             destination = document.elementFromPoint(event.pageX, event.pageY);
@@ -108,20 +102,24 @@ function addListeners() {
             buildSendScoreFromScreen();
         });
 
-        scoretext.addEventListener('click', (event) => {
+        div.addEventListener('click', (event) => {    
             const thisDiv = event.target
             const { top, bottom } = getOffset(thisDiv);
+            console.log(getOffset(thisDiv));
+            console.log(event.pageY + ' ' + event.pageX);
             const middle = top + .5 * (bottom - top);
             let adder = 1;
             if (event.pageY > middle) {
                 adder = -1;
             }
-            let val = parseInt(thisDiv.innerHTML);
+            const thisIndex = thisDiv.id.slice(-1);
+            const scoretext = document.getElementById(`scoretext${thisIndex}`);
+            let val = parseInt(scoretext.innerHTML);
             val = val + adder;
             if (val < 0) {
                 val = 0;
             }
-            thisDiv.innerHTML = val;
+            scoretext.innerHTML = val;
             buildSendScoreFromScreen();
         });
     }/// end listener spin
