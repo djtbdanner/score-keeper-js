@@ -63,7 +63,7 @@ function drawScreen(teamsList, includeListeners, roomName) {
         widthBottom = `25%`;
     }
 
-    scorepage += `<div class="menuDiv" style="height:4%;float:left;"><img src="images/menu_icon.png" class="menuimg" alt="menu" onClick="buildMenu()">${roomName}dave</div>`;
+    scorepage += `<div class="menuDiv" style="height:4%;float:left;"><img src="images/menu_icon.png" class="menuimg" alt="menu" onClick="buildMenu()">${roomName}</div>`;
     for (let i = 0; i < teamCount; i++) {
         let thisWidth = widthtop;
         if (teamCount === 3 && i > 1 || teamCount === 5 && i > 2 || teamCount === 7 && i > 3) { thisWidth = widthBottom; }
