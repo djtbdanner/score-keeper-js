@@ -1,8 +1,9 @@
+let firstScreen = true;
 function drawScreen(teamsList, includeListeners, roomName) {
 
     let existing = document.getElementById("screen-div");
     existing.style.width = `100%`;
-    existing.style.height = `100%`;/// sans menu
+    existing.style.height = `100%`;
 
     const isAnyOver99 = teamsList.find((team) => {return parseInt(team.score, 10)>99;}) !== undefined;
 
@@ -23,7 +24,7 @@ function drawScreen(teamsList, includeListeners, roomName) {
         height = `48%`;
         root.style.setProperty(`--default-font-size-portrait-header`, `5vh`);
         root.style.setProperty(`--default-font-size-landscape-header`, `6vh`);
-        root.style.setProperty(`--default-font-size-landscape`, `35vh`);
+        root.style.setProperty(`--default-font-size-landscape`, `30vh`);
     }
     if (teamCount === 1) {
         widthtop = `100%`;
@@ -33,7 +34,7 @@ function drawScreen(teamsList, includeListeners, roomName) {
         root.style.setProperty(`--default-font-size-portrait`, `14vh`);
     }
     if (teamCount >= 7) {
-        root.style.setProperty(`--default-font-size-landscape`, `30vh`);
+        root.style.setProperty(`--default-font-size-landscape`, `29vh`);
         root.style.setProperty(`--default-font-size-portrait`, `12vh`);
     }
     if (isAnyOver99) {
@@ -62,8 +63,7 @@ function drawScreen(teamsList, includeListeners, roomName) {
         widthBottom = `25%`;
     }
 
-    scorepage += `<div class="menuDiv" style="height:4%;float:left;"><img src="images/menu_icon.png" class="menuimg" alt="menu" onClick="buildMenu()">${roomName}</div>`;
-    // scorepage += `<div style="height:4%"><img src="images/menu_icon.png" class="menuimg" alt="menu">GAME NAME</div>`
+    scorepage += `<div class="menuDiv" style="height:4%;float:left;"><img src="images/menu_icon.png" class="menuimg" alt="menu" onClick="buildMenu()">${roomName}dave</div>`;
     for (let i = 0; i < teamCount; i++) {
         let thisWidth = widthtop;
         if (teamCount === 3 && i > 1 || teamCount === 5 && i > 2 || teamCount === 7 && i > 3) { thisWidth = widthBottom; }
@@ -82,12 +82,9 @@ function drawScreen(teamsList, includeListeners, roomName) {
         addListeners();
     }
 
-    if (root.requestFullscreen) {
-        root.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) {
-        root.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-        root.msRequestFullscreen();
+    if (firstScreen){
+        openFullScreen();
+        firstScreen = false;
     }
 }
 
@@ -99,11 +96,9 @@ function addListeners() {
             break;
         }
 
-
         div.addEventListener('dragend', (event) => {
             const sourceDiv = event.target;
             destination = document.elementFromPoint(event.pageX, event.pageY);
-            // console.log(destination.id);
             if (destination && destination.id !== sourceDiv.id) {
                 swapDivs(destination, sourceDiv)
             }
@@ -124,7 +119,6 @@ function addListeners() {
             var pageX = touchLocation.pageX;
             var pageY = touchLocation.pageY;
             destination = document.elementFromPoint(pageX, pageY);
-            // console.log(destination.id);
             if (destination && destination.id !== sourceDiv.id) {
                 swapDivs(destination, sourceDiv)
             }
@@ -134,8 +128,6 @@ function addListeners() {
         div.addEventListener('click', (event) => {
             const thisDiv = event.target
             const { top, bottom } = getOffset(thisDiv);
-            // console.log(getOffset(thisDiv));
-            // console.log(event.pageY + ' ' + event.pageX);
             const middle = top + .75 * (bottom - top);
             let adder = 1;
             if (event.pageY > middle) {
