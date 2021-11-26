@@ -39,7 +39,7 @@ socket.on('score-change', (data) => {
             let room = rooms.get(roomName);
             if (!room){
                 room = new Room(roomName);
-                socket.broadcast.emit('room-added');
+                socket.broadcast.emit('room-change');
             }
             room.scores = scores;
             if (isOwner){
@@ -48,7 +48,7 @@ socket.on('score-change', (data) => {
             }
             console.log(JSON.stringify(rooms));
             rooms.set(roomName, room);
-            console.log(`broadcasting to room ${roomName}, scores ${JSON.stringify(scores), roomName}`);
+            console.log(`broadcasting to room ${roomName}, scores: ${JSON.stringify(scores)}`);
             socket.to(roomName).emit(`score-change`, {scores:JSON.stringify(scores), roomName} );
         } catch (error) {
             handleError(socket, error, data);
@@ -118,6 +118,10 @@ io.of("/").adapter.on("leave-room", (room, id) => {
 });
 io.of("/").adapter.on("delete-room", (room) => {
     console.log(`room ${room} was deleted`);
+    if (rooms.get(room)){
+        rooms.delete(room);
+        io.sockets.emit('room-change');
+    }
     rooms.delete(room);
 });
 

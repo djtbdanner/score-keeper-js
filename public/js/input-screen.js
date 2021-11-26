@@ -17,8 +17,8 @@ async function buildEntryScreens() {
     await buildInitialScreen();
 }
 
-async function processRoomAdded(){
-    if (document.getElementById(`initial-screen`)){
+async function processRoomAdded() {
+    if (document.getElementById(`initial-screen`)) {
         await buildInitialScreen();
     } else {
         console.log('someone added another game');
@@ -178,7 +178,25 @@ function destroyElementNamed(divName) {
 }
 
 function getRandomColor(notThisOne) {
-    let colors = [`#4B0082`, `#FF1493`, `#FF0000`, `#FFA500`, `#FFD700`, `#008000`, `#008080`, `#4682B4`, `#0000FF`, `#800000`, `#FFFFFF`, `#000000`, `#708090`, `#FF1493`, `#FFFF00`, `#00CED1`];
+    let colors = [`#FFFFFF`,
+        `#C0C0C0`,
+        `#808080`,
+        `#000000`,
+        `#FF0000`,
+        `#800000`,
+        `#FFFF00`,
+        `#808000`,
+        `#00FF00`,
+        `#008000`,
+        `#00FFFF`,
+        `#008080`,
+        `#0000FF`,
+        `#000080`,
+        `#FF00FF`,
+        `#800080`,
+        `#8B4513`,
+        `#FF8C00`,
+        `#FF69B4`,];
     colors = colors.filter((a) => a !== notThisOne);
     var color = colors[Math.floor(Math.random() * colors.length)];
     return color;

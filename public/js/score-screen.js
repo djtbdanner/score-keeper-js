@@ -5,10 +5,11 @@ function drawScreen(teamsList, includeListeners, roomName) {
     existing.style.width = `100%`;
     existing.style.height = `100%`;
 
-    const isAnyOver99 = teamsList.find((team) => {return parseInt(team.score, 10)>99;}) !== undefined;
+    const isAnyOver99 = teamsList.find((team) => { return parseInt(team.score, 10) > 99; }) !== undefined;
 
-    let scorepage = ``;
     let teamCount = teamsList.length;
+
+    const menuHeight = getMenuHeightPercent(existing);
 
     let root = document.documentElement;
     root.style.setProperty(`--default-font-size-landscape`, `68vh`);
@@ -18,10 +19,12 @@ function drawScreen(teamsList, includeListeners, roomName) {
 
     let widthtop = `50%`;
     let widthBottom = `100%`;
-    let height = `96%`;
+    let displayHeight = 100 - menuHeight;
+    let height = `${displayHeight}%`;// total - menu
 
     if (teamCount > 2) {
-        height = `48%`;
+        displayHeight = displayHeight/2;
+        height = `${displayHeight}%`; // (total - menu) / 2
         root.style.setProperty(`--default-font-size-portrait-header`, `5vh`);
         root.style.setProperty(`--default-font-size-landscape-header`, `6vh`);
         root.style.setProperty(`--default-font-size-landscape`, `30vh`);
@@ -39,7 +42,7 @@ function drawScreen(teamsList, includeListeners, roomName) {
     }
     if (isAnyOver99) {
         root.style.setProperty(`--default-font-size-portrait`, `11vh`);
-        if (teamCount > 4){
+        if (teamCount > 4) {
             root.style.setProperty(`--default-font-size-portrait`, `7.5vh`);
         }
     }
@@ -63,7 +66,9 @@ function drawScreen(teamsList, includeListeners, roomName) {
         widthBottom = `25%`;
     }
 
-    scorepage += `<div class="menuDiv" style="height:4%;float:left;"><img src="images/menu_icon.png" class="menuimg" alt="menu" onClick="buildMenu()">${roomName}</div>`;
+
+    let scorepage = ``;
+    scorepage += `<div class="menuDiv"><img src="images/menu_icon.png" class="menuimg" alt="menu" onClick="buildMenu()">${roomName}</div>`;
     for (let i = 0; i < teamCount; i++) {
         let thisWidth = widthtop;
         if (teamCount === 3 && i > 1 || teamCount === 5 && i > 2 || teamCount === 7 && i > 3) { thisWidth = widthBottom; }
@@ -82,9 +87,25 @@ function drawScreen(teamsList, includeListeners, roomName) {
         addListeners();
     }
 
-    if (firstScreen){
+    if (firstScreen) {
         openFullScreen();
         firstScreen = false;
+    }
+}
+
+function getMenuHeightPercent(existing) {
+    try {
+        const td = `<div class="menuDiv" id="xxx">x</div>`;
+        existing.innerHTML = td;
+        elementHeight = getComputedStyle(document.getElementById(`xxx`)).height;
+        elementHeight = elementHeight.slice(0, -2);
+        var totalHeight = screen.height;
+        let roughPer = Math.round(parseFloat(elementHeight) / parseFloat(totalHeight) * 100);
+        destroyElementNamed('xxx');
+        return roughPer;
+    } catch (e) {
+        console.log(`Failed to determine menu height in % {e}`);
+        return 4;
     }
 }
 
@@ -108,10 +129,10 @@ function addListeners() {
         div.addEventListener('touchend', (event) => {
             const sourceDiv = event.target;
             let id = sourceDiv.id;
-            if (!id){
+            if (!id) {
                 return;
             }
-            id = id.slice(0,-1);
+            id = id.slice(0, -1);
             if (!(id === 'div' || id === `scoretext`)) {
                 return;
             }
@@ -128,7 +149,7 @@ function addListeners() {
         div.addEventListener('click', (event) => {
             const thisDiv = event.target
             const { top, bottom } = getOffset(thisDiv);
-            const middle = top + .75 * (bottom - top);
+            const middle = top + .80 * (bottom - top);
             let adder = 1;
             if (event.pageY > middle) {
                 adder = -1;
@@ -216,10 +237,10 @@ function buildSendScoreFromScreen() {
         }
     }
     const roomName = document.getElementById(`room-name`).value;
-    const isOwner = document.getElementById(`room-owner`).value.toLowerCase()===`true`;
+    const isOwner = document.getElementById(`room-owner`).value.toLowerCase() === `true`;
 
     // save scores locally so browser can be closed and opened on the scores
-    if (isOwner){
+    if (isOwner) {
         localStorage.setItem('scores', JSON.stringify(scores));
         localStorage.setItem('scores-date', new Date());
         localStorage.setItem('room-name', roomName);

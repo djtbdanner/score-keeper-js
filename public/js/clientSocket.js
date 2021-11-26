@@ -9,7 +9,7 @@ function scoreChange(room, scores, isOwner) {
     socket.emit(`score-change`, { room, scores: JSON.stringify(scores), isOwner:isOwner });
 }
 
-socket.on('room-added', () => {
+socket.on('room-change', () => {
     processRoomAdded();
 });
 
