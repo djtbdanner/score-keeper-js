@@ -2,21 +2,12 @@ let firstScreen = true;
 function drawScreen(teamsList, includeListeners, roomName) {
 
     let existing = document.getElementById("screen-div");
+    setFontDefaultSizes(teamsList);
     existing.style.width = `100%`;
     existing.style.height = `100%`;
 
-    const isAnyOver99 = teamsList.find((team) => { return parseInt(team.score, 10) > 99; }) !== undefined;
-
     let teamCount = teamsList.length;
-
     const menuHeight = getMenuHeightPercent(existing);
-
-    let root = document.documentElement;
-    root.style.setProperty(`--default-font-size-landscape`, `64vh`);
-    root.style.setProperty(`--default-font-size-portrait`, `20vh`);
-    root.style.setProperty(`--default-font-size-portrait-header`, `10vh`);
-    root.style.setProperty(`--default-font-size-landscape-header`, `12vh`);
-
     let widthtop = `50%`;
     let widthBottom = `100%`;
     let displayHeight = 100 - menuHeight;
@@ -25,34 +16,21 @@ function drawScreen(teamsList, includeListeners, roomName) {
     if (teamCount > 2) {
         displayHeight = displayHeight / 2;
         height = `${displayHeight}%`; // (total - menu) / 2
-        root.style.setProperty(`--default-font-size-portrait-header`, `5vh`);
-        root.style.setProperty(`--default-font-size-landscape-header`, `6vh`);
-        root.style.setProperty(`--default-font-size-landscape`, `30vh`);
     }
+
     if (teamCount === 1) {
         widthtop = `100%`;
     }
 
-    if (teamCount > 4) {
-        root.style.setProperty(`--default-font-size-portrait`, `14vh`);
-    }
-    if (teamCount >= 7) {
-        root.style.setProperty(`--default-font-size-landscape`, `26vh`);
-        root.style.setProperty(`--default-font-size-portrait`, `9vh`);
-    }
-    if (isAnyOver99) {
-        root.style.setProperty(`--default-font-size-portrait`, `9vh`);
-        if (teamCount > 4) {
-            root.style.setProperty(`--default-font-size-portrait`, `7.5vh`);
-        }
-    }
     if (teamCount === 4) {
         widthBottom = `50%`;
     }
+
     if (teamCount === 5) {
         widthtop = `33.33%`;
         widthBottom = `50%`;
     }
+
     if (teamCount === 6) {
         widthtop = `33.33%`;
         widthBottom = `33.33%`;
@@ -93,6 +71,53 @@ function drawScreen(teamsList, includeListeners, roomName) {
     }
 }
 
+function setFontDefaultSizes(teamsList) {
+    let root = document.documentElement;
+    const isAnyOver99 = teamsList.find((team) => { return parseInt(team.score, 10) > 99; }) !== undefined;
+
+    let teamCount = teamsList.length;
+    root.style.setProperty(`--default-font-size-landscape`, `64vh`);
+    root.style.setProperty(`--default-font-size-portrait`, `20vh`);
+    root.style.setProperty(`--default-font-size-portrait-header`, `10vh`);
+    root.style.setProperty(`--default-font-size-landscape-header`, `12vh`);
+    if (isAnyOver99) {
+        root.style.setProperty(`--default-font-size-landscape`, `48vh`);
+        root.style.setProperty(`--default-font-size-portrait`, `16vh`);
+    }
+
+    if (teamCount > 2) {
+        root.style.setProperty(`--default-font-size-portrait-header`, `5vh`);
+        root.style.setProperty(`--default-font-size-landscape-header`, `6vh`);
+        root.style.setProperty(`--default-font-size-landscape`, `30vh`);
+        if (isAnyOver99) {
+            root.style.setProperty(`--default-font-size-landscape`, `24vh`);
+        }
+    }
+    if (teamCount > 4) {
+        root.style.setProperty(`--default-font-size-portrait`, `14vh`);
+        if (isAnyOver99) {
+            root.style.setProperty(`--default-font-size-portrait`, `12vh`);
+        }
+    }
+    if (teamCount >= 7) {
+        root.style.setProperty(`--default-font-size-landscape`, `26vh`);
+        root.style.setProperty(`--default-font-size-portrait`, `9vh`);
+        if (isAnyOver99) {
+            root.style.setProperty(`--default-font-size-landscape`, `24vh`);
+            root.style.setProperty(`--default-font-size-portrait`, `8vh`);
+        }
+    }
+    // if (isAnyOver99) {
+    //     root.style.setProperty(`--default-font-size-landscape`, `22vh`);
+    //     root.style.setProperty(`--default-font-size-portrait`, `9vh`);
+    //     if (teamCount > 4) {
+    //         root.style.setProperty(`--default-font-size-landscape`, `20vh`);            
+    //         root.style.setProperty(`--default-font-size-portrait`, `7.5vh`);
+    //     }
+    // }
+
+}
+
 function getMenuHeightPercent(existing) {
     try {
         const td = `<div class="menuDiv" id="xxx">x</div>`;
@@ -109,21 +134,65 @@ function getMenuHeightPercent(existing) {
     }
 }
 
+let touchx;
+let touchy;
+let eventx;
+let eventy;
 function addListeners() {
-
+    // window.addEventListener('mouseup', e => {
+    //     x = e.offsetX;
+    //     y = e.offsetY;
+    //     alert(x)
+    // });
     for (d = 0; d < 8; d++) {
         const div = document.getElementById(`div${d}`);
         if (!div) {
             break;
         }
 
+        div.addEventListener('dragstart', (event) => {
+            // event.dataTransfer.setData("origScreenX", event.screenX);
+            // event.dataTransfer.setData("origScreenY", event.screenY);
+            eventx = event.screenX;
+            eventy = event.screenY;
+        });
+
         div.addEventListener('dragend', (event) => {
             const sourceDiv = event.target;
-            destination = document.elementFromPoint(event.pageX, event.pageY);
-            if (destination && destination.id !== sourceDiv.id) {
-                swapDivs(destination, sourceDiv)
+            let xLoc = event.pageX;
+            let yLoc = event.pageY;
+            let userAgent = navigator.userAgent;
+            if (userAgent) {
+                // I understand this is a bug in firefox
+                if (userAgent.includes("Firefox") && userAgent.includes("Windows")) {
+                    xLoc = event.screenX;
+                    yLoc = event.screenY;
+                }
+            }
+            destination = document.elementFromPoint(xLoc, yLoc);
+            if (destination && destination.id && sourceDiv && sourceDiv.id && (destination.id.slice(-1) !== sourceDiv.id.slice(-1))) {
+                swapDivs(destination, sourceDiv);
+            } else {
+                // console.log(destination)
+                if (destination && destination.id && !isNaN(destination.id.slice(-1))) {
+                    if (Math.abs(parseInt(eventy, 10) - parseInt(yLoc, 10)) > 200) {
+                        let adder = 1;
+                        if (parseInt(eventy, 10) > parseInt(yLoc, 10)) {
+                            adder = -1;
+                        }
+                        // console.log(adder);
+                        const thisIndex = destination.id.slice(-1);
+                        addItToScoreTxt(thisIndex, adder);
+                    }
+                }
             }
             buildSendScoreFromScreen();
+        });
+
+        div.addEventListener('touchstart', (event) => {
+            var touchLocation = event.changedTouches[0];
+            touchx = touchLocation.pageX;
+            touchy = touchLocation.pageY;
         });
 
         div.addEventListener('touchend', (event) => {
@@ -136,14 +205,28 @@ function addListeners() {
             if (!(id === 'div' || id === `scoretext`)) {
                 return;
             }
+            // console.log(event.changedTouches);
             var touchLocation = event.changedTouches[0];
             var pageX = touchLocation.pageX;
             var pageY = touchLocation.pageY;
             destination = document.elementFromPoint(pageX, pageY);
             if (destination && destination.id !== sourceDiv.id) {
                 swapDivs(destination, sourceDiv)
+            } else {
+                if (destination && destination.id && !isNaN(destination.id.slice(-1))) {
+                    if (Math.abs(parseInt(touchy, 10) - parseInt(pageY, 10)) > 40) {
+                        let adder = 1;
+                        if (touchy > pageY) {
+                            adder = -1;
+                        }
+                        const thisIndex = destination.id.slice(-1);
+                        addItToScoreTxt(thisIndex, adder);
+                    }
+                }
             }
             buildSendScoreFromScreen();
+            touchx = undefined;
+            touchy = undefined;
         });
 
         div.addEventListener('click', (event) => {
@@ -151,20 +234,28 @@ function addListeners() {
             const { top, bottom } = getOffset(thisDiv);
             const middle = top + .80 * (bottom - top);
             let adder = 1;
+            const alt = document.getElementById(`points-per-tap`).value;
+            if (!isNaN(alt)) {
+                adder = parseInt(alt, 10);
+            }
             if (event.pageY > middle) {
-                adder = -1;
+                adder = adder * -1;
             }
             const thisIndex = thisDiv.id.slice(-1);
-            const scoretext = document.getElementById(`scoretext${thisIndex}`);
-            let val = parseInt(scoretext.innerHTML);
-            val = val + adder;
-            if (val < 0) {
-                val = 0;
-            }
-            scoretext.innerHTML = val;
+            addItToScoreTxt(thisIndex, adder);
             buildSendScoreFromScreen();
         });
     }/// end listener spin
+}
+
+function addItToScoreTxt(thisIndex, adder) {
+    const scoretext = document.getElementById(`scoretext${thisIndex}`);
+    let val = parseInt(scoretext.innerHTML);
+    val = val + adder;
+    if (val < 0) {
+        val = 0;
+    }
+    scoretext.innerHTML = val;
 }
 
 function getOffset(el) {
@@ -238,6 +329,7 @@ function buildSendScoreFromScreen() {
     }
     const roomName = document.getElementById(`room-name`).value;
     const isOwner = document.getElementById(`room-owner`).value.toLowerCase() === `true`;
+    const pointsPerTap = document.getElementById(`points-per-tap`).value;
 
     // save scores locally so browser can be closed and opened on the scores
     if (isOwner) {
@@ -245,6 +337,8 @@ function buildSendScoreFromScreen() {
         localStorage.setItem('scores-date', new Date());
         localStorage.setItem('room-name', roomName);
         localStorage.setItem('is-owner', isOwner);
+        localStorage.setItem('points-per-tap', pointsPerTap);
     }
     scoreChange(roomName, scores, isOwner);
+    setFontDefaultSizes(scores);
 }

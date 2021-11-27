@@ -34,12 +34,17 @@ async function buildInitialScreen() {
     html += `<form><div id="initial-screen" class="modal">`;
     html += `<table cellpadding="0" cellspacing="0" width="100%" border="0">`;
     html += `<tr><td colspan="2" style = "text-align:center;">`;
-    html += `<p>Enter game name, add teams or players.</p>`;
+    html += `<p>Enter game, choose points per goal and add teams or players.</p>`;
     html += `</td></tr>`;
     html += `<tr><td>`;
-    html += `&nbsp; Game: `;
+    html += `&nbsp;Game: `;
     html += `</td><td>`;
     html += `<input type="text" maxlength="10" id="game-name" placeholder="GameName" onKeyUp="checkTeamName()" autofocus />`;
+    html += `</td></tr>`;
+    html += `<tr><td>`;
+    html += `&nbsp;Points: `;
+    html += `</td><td>`;
+    html += `<input type="number" maxlength="3" id="goal-points" value = "1" min="1" max="100" />`;
     html += `</td></tr>`;
     html += `<tr><td colspan="2" style = "text-align:center;">`;
     html += `<span id = "game-msg-span">&nbsp</span>`;
@@ -62,8 +67,9 @@ function rebuildGameFromLocalStorage() {
     const roomName = localStorage.getItem('room-name');
     document.getElementById(`room-name`).value = roomName;
     document.getElementById(`room-owner`).value = "true";
+    document.getElementById(`points-per-tap`).value = localStorage.getItem(`points-per-tap`) || 1;
     const scores = JSON.parse(storedScores);
-    sendRoomMessage(roomName, 'Owner reconnected');
+    sendRoomMessage(roomName, `Score keeper reconnected to ${roomName}.`);
     scoreChange(roomName, scores, true);
     drawScreen(scores, true, roomName);
 }
@@ -72,6 +78,7 @@ function setRoomAddPlayer() {
 
     const selectedRoomName = document.getElementById(`game-name`).value;
     document.getElementById(`room-name`).value = document.getElementById(`game-name`).value;
+    document.getElementById(`points-per-tap`).value = document.getElementById(`goal-points`).value;
     destroyElementNamed('initial-screen');
     addPlayerOrTeam(0);
 }

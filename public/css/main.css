@@ -119,17 +119,17 @@ body {
   height: 100%;
   padding: 0;
   margin: 0;
-  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-family:Arial, Helvetica, sans-serif, Geneva, Tahoma, sans-serif;
 }
 
 .modal {
-  width: 300px;
-  height: 300px;
+  width: 350px;
+  height: 350px;
   position: absolute;
   left: 50%;
-  top: 150px; 
-  margin-left: -150px;
-  margin-top: -150px;
+  top: 175px; 
+  margin-left: -175px;
+  margin-top: -175px;
   background-color: var(--default-background-color) ; 
   border:3px solid var(--default-border-color);
   border-radius: 3px;
