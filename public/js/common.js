@@ -13,7 +13,7 @@ async function buildMenu() {
         html += `<a class ="menuItem" onClick="closeFullscreen();">Exit FullScreen</a></br>`;
         html += `<hr>`;
     }
-    html += `<a class ="menuItem" onClick="textMessages();">Messages...</a></br>`;
+    html += `<a class ="menuItem" onClick="textMessages();">View messages</a></br>`;
     html += `<hr>`;
     html += `<a class ="menuItem" onClick="sendMessage();">Send Message</a></br>`;
     html += `<hr>`;
@@ -73,10 +73,10 @@ function goToHomePage() {
 async function modalConfirm(message, doFunctionName, dontFunctionName, doButton, dontButton) {
 
     if (!doButton) {
-        doButton = `continue`;
+        doButton = `Continue`;
     }
     if (!dontButton) {
-        dontButton = `cancle`;
+        dontButton = `Cancel`;
     }
     let html = ``;
     html += `<div id="modal-confirm" class="modal" style="background-color: rgba(139, 139, 139, 0.9);">`;
@@ -94,6 +94,9 @@ async function modalConfirm(message, doFunctionName, dontFunctionName, doButton,
     let div = document.createElement(`div`);
     div.innerHTML = html;
     document.body.appendChild(div);
+    // if (document.fullscreenElement){
+    //     openFullScreen();
+    // }
 }
 
 async function modalMessage(message) {
@@ -112,6 +115,9 @@ async function modalMessage(message) {
     let div = document.createElement(`div`);
     div.innerHTML = html;
     document.body.appendChild(div);
+    // if (document.fullscreenElement){
+    //     openFullScreen();
+    // }
 
 }
 
@@ -133,6 +139,9 @@ async function textMessages() {
     document.body.appendChild(div);
     var textarea = document.getElementById('txt-messages');
     textarea.scrollTop = textarea.scrollHeight;
+    // if (document.fullscreenElement){
+    //     openFullScreen();
+    // }
 }
 
 
@@ -148,6 +157,9 @@ function sendMessage() {
     let div = document.createElement(`div`);
     div.innerHTML = html;
     document.body.appendChild(div);
+    // if (document.fullscreenElement){
+    //     openFullScreen();
+    // }
 }
 
 function checkDisabled(){

@@ -88,7 +88,7 @@ function drawScreen(teamsList, includeListeners, roomName) {
     }
 
     if (firstScreen) {
-        // openFullScreen();
+        openFullScreen();
         firstScreen = false;
     }
 }

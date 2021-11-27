@@ -8,7 +8,7 @@ async function buildEntryScreens() {
         const dateToCompare = new Date(date);
         if (isToday(dateToCompare)) {
             const msg = `You were keeping score for <i><b>${roomName}</b></i> earlier today</br> Would you like to continue with that game?`;
-            modalConfirm(msg, `rebuildGameFromLocalStorage()`, `buildInitialScreen()`, `continue ${roomName}`, `new game`);
+            modalConfirm(msg, `rebuildGameFromLocalStorage()`, `buildInitialScreen()`, `Continue ${roomName}`, `New Game`);
         }
     }
 
