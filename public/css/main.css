@@ -119,7 +119,7 @@ body {
   height: 100%;
   padding: 0;
   margin: 0;
-  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .modal {
@@ -135,6 +135,20 @@ body {
   border-radius: 3px;
   box-shadow: var(--default-shadow);
 }
+
+.txt {
+  width: 100%;
+  height: 75%;
+  position: absolute;
+  left: 0px;
+  top: 0px; 
+  /* margin-left: -150px;
+  margin-top: -150px; */
+  background-color: rgba(139, 139, 139, 0.8);  
+  border:3px solid var(--default-border-color);
+  border-radius: 3px;
+  box-shadow: var(--default-shadow);
+} */
 
 .disp {
   width:23%;

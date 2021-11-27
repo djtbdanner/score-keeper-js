@@ -14,7 +14,7 @@ socket.on('room-change', () => {
 });
 
 socket.on('message-room', (message) => {
-    alert(message);
+    modalMessage(message);
 });
 
 function sendRoomMessage(roomName, message) {
@@ -46,6 +46,20 @@ async function isRoomAvailable(room) {
     const isAvailable = result.isAvailable;
     console.log('result ' + JSON.stringify(isAvailable));
     return isAvailable;
+}
+
+socket.on('new-text-message', () => {
+    textMessages();
+});
+
+async function getMessages(room) {
+    const result = await asyncEmit('get-text-messages', room);
+    console.log(`messages ${result}`);
+    return result;
+}
+
+function sendTextMessage(roomName, message){
+    socket.emit(`message-text`, { roomName, message });
 }
 
 function asyncEmit(eventName, data) {

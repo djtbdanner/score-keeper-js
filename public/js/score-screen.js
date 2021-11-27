@@ -12,8 +12,8 @@ function drawScreen(teamsList, includeListeners, roomName) {
     const menuHeight = getMenuHeightPercent(existing);
 
     let root = document.documentElement;
-    root.style.setProperty(`--default-font-size-landscape`, `68vh`);
-    root.style.setProperty(`--default-font-size-portrait`, `21vh`);
+    root.style.setProperty(`--default-font-size-landscape`, `64vh`);
+    root.style.setProperty(`--default-font-size-portrait`, `20vh`);
     root.style.setProperty(`--default-font-size-portrait-header`, `10vh`);
     root.style.setProperty(`--default-font-size-landscape-header`, `12vh`);
 
@@ -23,7 +23,7 @@ function drawScreen(teamsList, includeListeners, roomName) {
     let height = `${displayHeight}%`;// total - menu
 
     if (teamCount > 2) {
-        displayHeight = displayHeight/2;
+        displayHeight = displayHeight / 2;
         height = `${displayHeight}%`; // (total - menu) / 2
         root.style.setProperty(`--default-font-size-portrait-header`, `5vh`);
         root.style.setProperty(`--default-font-size-landscape-header`, `6vh`);
@@ -37,11 +37,11 @@ function drawScreen(teamsList, includeListeners, roomName) {
         root.style.setProperty(`--default-font-size-portrait`, `14vh`);
     }
     if (teamCount >= 7) {
-        root.style.setProperty(`--default-font-size-landscape`, `29vh`);
-        root.style.setProperty(`--default-font-size-portrait`, `12vh`);
+        root.style.setProperty(`--default-font-size-landscape`, `26vh`);
+        root.style.setProperty(`--default-font-size-portrait`, `9vh`);
     }
     if (isAnyOver99) {
-        root.style.setProperty(`--default-font-size-portrait`, `11vh`);
+        root.style.setProperty(`--default-font-size-portrait`, `9vh`);
         if (teamCount > 4) {
             root.style.setProperty(`--default-font-size-portrait`, `7.5vh`);
         }
@@ -88,7 +88,7 @@ function drawScreen(teamsList, includeListeners, roomName) {
     }
 
     if (firstScreen) {
-        openFullScreen();
+        // openFullScreen();
         firstScreen = false;
     }
 }

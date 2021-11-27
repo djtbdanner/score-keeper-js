@@ -7,10 +7,8 @@ async function buildEntryScreens() {
     if (storedScores && date && roomName) {
         const dateToCompare = new Date(date);
         if (isToday(dateToCompare)) {
-            if (confirm('Would you like to continue with the score you had earlier today?')) {
-                rebuildOldGame(roomName, storedScores);
-                return;
-            }
+            const msg = `You were keeping score for <i><b>${roomName}</b></i> earlier today</br> Would you like to continue with that game?`;
+            modalConfirm(msg, `rebuildGameFromLocalStorage()`, `buildInitialScreen()`, `continue ${roomName}`, `new game`);
         }
     }
 
@@ -57,8 +55,11 @@ async function buildInitialScreen() {
     existing.style.display = `block`;
 }
 
-function rebuildOldGame(roomName, storedScores) {
+function rebuildGameFromLocalStorage() {
 
+    const storedScores = localStorage.getItem('scores');
+    const date = localStorage.getItem('scores-date');
+    const roomName = localStorage.getItem('room-name');
     document.getElementById(`room-name`).value = roomName;
     document.getElementById(`room-owner`).value = "true";
     const scores = JSON.parse(storedScores);
@@ -101,7 +102,7 @@ function setRoomAddJoin(roomName) {
     const storedRoomName = localStorage.getItem('room-name');
     const storedScores = localStorage.getItem('scores');
     if (roomName === storedRoomName && storedScores) {
-        rebuildOldGame(roomName, storedScores);
+        rebuildGameFromLocalStorage();
         return;
     } else {
         joinRoom(roomName);
@@ -205,7 +206,6 @@ function getRandomColor(notThisOne) {
 function addTeam(index) {
     const primaryColor = document.getElementById(`primary-color${index}`).value;
     const secondaryColor = document.getElementById(`secondary-color${index}`).value;
-
     const teamName = document.getElementById(`in-teamName${index}`).value;
     let html = ``;
     html += `<div id="div${index}" class="disp" style="background-color:${primaryColor};color:${secondaryColor}">`;
@@ -217,9 +217,9 @@ function addTeam(index) {
     html += `</div>`;
     let div = document.createElement(`div`);
     div.innerHTML = html;
-    //  document.getElementById("the-top").appendChild(div);
-    document.body.appendChild(div);
 
+    document.body.appendChild(div);
+    // remove the current add team div
     let node = document.getElementById("addDiv" + index);
     if (node.parentNode) {
         node.parentNode.removeChild(node);
