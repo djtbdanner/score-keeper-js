@@ -139,15 +139,25 @@ async function textMessages() {
 function sendMessage() {
     const roomName = document.getElementById(`room-name`).value;
     let html = ``;
-    html += `<div id="text-message-in" class="txt" style="background-color: rgba(139, 139, 139, 0.9);text-align:center;">`;
-    html += `<textarea id="txt-message-to-send" style="width:98%;height:50%;">`;
+    html += `<form><div id="text-message-in" class="txt" style="background-color: rgba(139, 139, 139, 0.9);text-align:center;">`;
+    html += `<textarea id="txt-message-to-send" style="width:98%;height:50%;" onKeyup="checkDisabled()">`;
     html += `</textarea>`;
     html += `</br><input type="button" value="Cancel" onClick="destroyById('text-message-in');" />`;
-    html += `<input type="button" value="Send" onClick="send()" />`;
-    html += `</div>`;
+    html += `<input type="submit" value="Send" disabled="true" id="send-text-button" formaction="javascript:send()"/>`;
+    html += `</div></form>`;
     let div = document.createElement(`div`);
     div.innerHTML = html;
     document.body.appendChild(div);
+}
+
+function checkDisabled(){
+    const textMessage = document.getElementById(`txt-message-to-send`).value;
+    const button = document.getElementById(`send-text-button`);
+    if (textMessage){
+        button.disabled = false;
+    }else{
+        buttons.disabled = true;
+    }
 }
 
 function send(){
