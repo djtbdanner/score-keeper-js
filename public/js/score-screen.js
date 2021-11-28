@@ -88,7 +88,6 @@ function setFontDefaultSizes(teamsList) {
     if (isAnyOver999) {
         root.style.setProperty(`--default-font-size-landscape`, `38vh`);
         root.style.setProperty(`--default-font-size-portrait`, `12vh`);
-        alert()
     }
 
     if (teamCount > 2) {
