@@ -245,8 +245,8 @@ function buildAndSendScore() {
     const scores = [];
 
     for (let i = 0; i < 8; i++) {
-        console.log(i);
-        console.log(document.getElementById(`teamName${i}`));//(l).value;
+        // console.log(i);
+        // console.log(document.getElementById(`teamName${i}`));//(l).value;
         if (!document.getElementById(`teamName${i}`)) {
             break;
         }
@@ -277,6 +277,10 @@ function buildAndSendScore() {
     document.getElementById(`room-owner`).value = true;
     scoreChange(roomName, scores, true);
     drawScreen(scores, true, roomName);
+    const pointsPer =  document.getElementById(`points-per-tap`).value;
+    if (pointsPer && parseInt(pointsPer, 10) > 1){
+        modalMessage(`Each click on the score will add ${pointsPer} points, clicking at bottom of score will subtract ${pointsPer} points. If you need to add or remove a single point, slide up on the score toremove a point and slide down to add a point.`);
+    }
 }
 
 async function checkTeamName() {
@@ -286,7 +290,7 @@ async function checkTeamName() {
     gameMessageSpan.innerHTML = `&nbsp;`;
     if (gameName && gameName.length > 0) {
         const available = await isRoomAvailable(gameName);
-        console.log(`is available ${available}`);
+        // console.log(`is available ${available}`);
         if (available) {
             addPlayerButton.disabled = false;
         } else {

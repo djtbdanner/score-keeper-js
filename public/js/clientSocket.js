@@ -44,7 +44,7 @@ async function joinRoom(roomName) {
 async function isRoomAvailable(room) {
     const result = await asyncEmit('is-room-available', room);
     const isAvailable = result.isAvailable;
-    console.log('result ' + JSON.stringify(isAvailable));
+    // console.log('result ' + JSON.stringify(isAvailable));
     return isAvailable;
 }
 
@@ -54,7 +54,7 @@ socket.on('new-text-message', () => {
 
 async function getMessages(room) {
     const result = await asyncEmit('get-text-messages', room);
-    console.log(`messages ${result}`);
+    // console.log(`messages ${result}`);
     return result;
 }
 
