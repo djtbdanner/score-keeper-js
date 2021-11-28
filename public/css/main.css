@@ -56,20 +56,6 @@
     float: left;
     border-top-right-radius: 5px;
   }
-
-  .modal {
-    width: 98%;
-    height: 50%;
-    position: absolute;
-    left: 1px;
-    top: 1px; 
-    /* margin-left: -175px;
-    margin-top: -175px; */
-    background-color: var(--default-background-color) ; 
-    border:3px solid var(--default-border-color);
-    border-radius: 3px;
-    box-shadow: var(--default-shadow);
-  }
 }
 
 /* Horizontal, like good old browser */
@@ -114,20 +100,6 @@
     float: left;
     border-top-right-radius: 5px;
   }
-
-  .modal {
-    width: 40%;
-    height: 50%;
-    position: absolute;
-    left: 30%;
-    top: 1px; 
-    /* margin-left: -175px;
-    margin-top: -175px; */
-    background-color: var(--default-background-color) ; 
-    border:3px solid var(--default-border-color);
-    border-radius: 3px;
-    box-shadow: var(--default-shadow);
-  }
 }
 /* Horizontal, and probably a mobile, or smaller device */
 @media screen and (max-device-height: 500px)  and (orientation: landscape){
@@ -139,19 +111,6 @@
     text-align: center;
     font-weight: 550;
     font-size: 3.5vh; 
-  }
-  .modal {
-    width: 60%;
-    height: 80%;
-    position: absolute;
-    left: 20%;
-    top: 1px; 
-    /* margin-left: -175px;
-    margin-top: -175px; */
-    background-color: var(--default-background-color) ; 
-    border:3px solid var(--default-border-color);
-    border-radius: 3px;
-    box-shadow: var(--default-shadow);
   }
 }
 
@@ -268,4 +227,18 @@ input[type="color"]::-webkit-color-swatch {
   align-content: center;
   color: black;
   text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
+}
+
+.modal {
+  width: 99%;
+  height: 99%;
+  position: absolute;
+  left: 0px;
+  top: 1px; 
+  /* margin-left: -175px;
+  margin-top: -175px; */
+  background-color: var(--default-background-color) ; 
+  border:3px solid var(--default-border-color);
+  border-radius: 3px;
+  box-shadow: var(--default-shadow);
 }

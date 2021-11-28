@@ -36,13 +36,13 @@ async function buildInitialScreen() {
     html += `<tr><td colspan="2" style = "text-align:center;">`;
     html += `<p>Enter game, choose points per goal and add teams or players.</p>`;
     html += `</td></tr>`;
-    html += `<tr><td>`;
-    html += `&nbsp;Game: `;
+    html += `<tr><td style="text-align:right;">`;
+    html += `Game: `;
     html += `</td><td>`;
     html += `<input type="text" maxlength="10" id="game-name" placeholder="GameName" onKeyUp="checkTeamName()" autofocus />`;
     html += `</td></tr>`;
-    html += `<tr><td>`;
-    html += `&nbsp;Points: `;
+    html += `<tr><td style="text-align:right;">`;
+    html += `Points: `;
     html += `</td><td>`;
     html += `<input type="number" maxlength="3" id="goal-points" value = "1" min="1" max="100" />`;
     html += `</td></tr>`;
@@ -87,7 +87,7 @@ function buildRoomList(availableRooms) {
 
     if (availableRooms && availableRooms.length > 0) {
         let html = ``;
-        html += `<tr><td colspan="2">`;
+        html += `<tr><td colspan="2" style = "text-align:center;">`;
         html += `<p>Or, select a game below to view the scores.</p>`;
         html += `</td></tr>`;
         html += `<tr><td colspan="2" style = "text-align:center;">`;
