@@ -1,13 +1,10 @@
 let firstScreen = true;
 function drawScreen(teamsList, includeListeners, roomName) {
 
-    let existing = document.getElementById("screen-div");
+    destroyById(`score-div`);
     setFontDefaultSizes(teamsList);
-    existing.style.width = `100%`;
-    existing.style.height = `100%`;
-
     let teamCount = teamsList.length;
-    const menuHeight = getMenuHeightPercent(existing);
+    const menuHeight = getMenuHeightPercent();
     let widthtop = `50%`;
     let widthBottom = `100%`;
     let displayHeight = 100 - menuHeight;
@@ -44,22 +41,21 @@ function drawScreen(teamsList, includeListeners, roomName) {
         widthBottom = `25%`;
     }
 
-
     let scorepage = ``;
-    scorepage += `<div class="menuDiv"><img src="images/menu_icon.png" class="menuimg" alt="menu" onClick="buildMenu()">${roomName}</div>`;
+    scorepage += `<div class="menuDiv" id="score-div"><img src="images/menu_icon.png" class="menuimg" alt="menu" onClick="buildMenu()">${roomName}</div>`;
+    // const isDraggable = includeListeners;
     for (let i = 0; i < teamCount; i++) {
         let thisWidth = widthtop;
         if (teamCount === 3 && i > 1 || teamCount === 5 && i > 2 || teamCount === 7 && i > 3) { thisWidth = widthBottom; }
-        scorepage += `<div id="div${i}" draggable = "true" style="background-color: ${teamsList[i].color}; width:${thisWidth}; height:${height};float:left;">`;
-        scorepage += `<div class="header" id="headerdiv${i}" style="background-color: ${teamsList[i].textColor};">`;
+        scorepage += `<div id="div${i}" draggable = "${includeListeners}" style="background-color: ${teamsList[i].color}; width:${thisWidth}; height:${height};float:left;border-radius:4px">`;
+        scorepage += `<div class="header" id="headerdiv${i}" style="background-color: ${teamsList[i].textColor};border-top-left-radius:4px;border-top-right-radius:4px;">`;
         scorepage += `<p class="headertext" id="headertext${i}" style="color:${teamsList[i].color}">${teamsList[i].teamName}</p>`;
         scorepage += `</div>`;
         const s = teamsList[i].score; // Math.floor(Math.random() * (99 - 0 + 1)) + 0;
         scorepage += `<p class="scoretext" id=scoretext${i} style="color:${teamsList[i].textColor}">${s}</p>`;
         scorepage += `</div>`;
     }
-    existing.innerHTML = scorepage;
-    existing.style.display = `block`;
+    createAndAppendDiv(scorepage, 'score-page-div', true);
 
     if (includeListeners) {
         addListeners();
@@ -122,29 +118,20 @@ function setFontDefaultSizes(teamsList) {
             root.style.setProperty(`--default-font-size-portrait`, `6vh`);
         }
     }
-    // if (isAnyOver99) {
-    //     root.style.setProperty(`--default-font-size-landscape`, `22vh`);
-    //     root.style.setProperty(`--default-font-size-portrait`, `9vh`);
-    //     if (teamCount > 4) {
-    //         root.style.setProperty(`--default-font-size-landscape`, `20vh`);            
-    //         root.style.setProperty(`--default-font-size-portrait`, `7.5vh`);
-    //     }
-    // }
-
 }
 
-function getMenuHeightPercent(existing) {
+function getMenuHeightPercent() {
     try {
         const td = `<div class="menuDiv" id="xxx">x</div>`;
-        existing.innerHTML = td;
+        createAndAppendDiv(html, 'default', false);
         elementHeight = getComputedStyle(document.getElementById(`xxx`)).height;
         elementHeight = elementHeight.slice(0, -2);
         var totalHeight = screen.height;
         let roughPer = Math.round(parseFloat(elementHeight) / parseFloat(totalHeight) * 100);
-        destroyElementNamed('xxx');
+        destroyById(`xxx`);
         return roughPer;
     } catch (e) {
-        console.log(`Failed to determine menu height in % {e}`);
+        console.log(`Failed to determine menu height in % ${e}`);
         return 4;
     }
 }
@@ -154,54 +141,27 @@ let touchy;
 let eventx;
 let eventy;
 function addListeners() {
-    // window.addEventListener('mouseup', e => {
-    //     x = e.offsetX;
-    //     y = e.offsetY;
-    //     alert(x)
-    // });
+
     for (d = 0; d < 8; d++) {
         const div = document.getElementById(`div${d}`);
         if (!div) {
             break;
         }
 
+        const scoretxt = document.getElementById(`scoretext${d}`);
         div.addEventListener('dragstart', (event) => {
-            // event.dataTransfer.setData("origScreenX", event.screenX);
-            // event.dataTransfer.setData("origScreenY", event.screenY);
-            eventx = event.screenX;
-            eventy = event.screenY;
+            dragStartProcessor(event);
         });
 
         div.addEventListener('dragend', (event) => {
-            const sourceDiv = event.target;
-            let xLoc = event.pageX;
-            let yLoc = event.pageY;
-            let userAgent = navigator.userAgent;
-            if (userAgent) {
-                // I understand this is a bug in firefox
-                if (userAgent.includes("Firefox") && userAgent.includes("Windows")) {
-                    xLoc = event.screenX;
-                    yLoc = event.screenY;
-                }
-            }
-            destination = document.elementFromPoint(xLoc, yLoc);
-            if (destination && destination.id && sourceDiv && sourceDiv.id && (destination.id.slice(-1) !== sourceDiv.id.slice(-1))) {
-                swapDivs(destination, sourceDiv);
-            } else {
-                // console.log(destination)
-                if (destination && destination.id && !isNaN(destination.id.slice(-1))) {
-                    if (Math.abs(parseInt(eventy, 10) - parseInt(yLoc, 10)) > 200) {
-                        let adder = 1;
-                        if (parseInt(eventy, 10) > parseInt(yLoc, 10)) {
-                            adder = -1;
-                        }
-                        // console.log(adder);
-                        const thisIndex = destination.id.slice(-1);
-                        addItToScoreTxt(thisIndex, adder);
-                    }
-                }
-            }
-            buildSendScoreFromScreen();
+            dragEndProcessor(event);
+        });
+        scoretxt.addEventListener('dragstart', (event) => {
+            dragStartProcessor(event);
+        });
+
+        scoretxt.addEventListener('dragend', (event) => {
+            dragEndProcessor(event);
         });
 
         div.addEventListener('touchstart', (event) => {
@@ -212,34 +172,38 @@ function addListeners() {
 
         div.addEventListener('touchend', (event) => {
             const sourceDiv = event.target;
-            let id = sourceDiv.id;
-            if (!id) {
+            if (!isDivOrScore(sourceDiv)) {
                 return;
             }
-            id = id.slice(0, -1);
-            if (!(id === 'div' || id === `scoretext`)) {
+
+            let touchLocation = event.changedTouches[0];
+            let pageX = touchLocation.pageX;
+            let pageY = touchLocation.pageY;
+            let destination = document.elementFromPoint(pageX, pageY);
+            if (!isDivOrScore(destination)) {
                 return;
             }
-            // console.log(event.changedTouches);
-            var touchLocation = event.changedTouches[0];
-            var pageX = touchLocation.pageX;
-            var pageY = touchLocation.pageY;
-            destination = document.elementFromPoint(pageX, pageY);
-            if (destination && destination.id !== sourceDiv.id) {
-                swapDivs(destination, sourceDiv)
+            let destinationDivNum = getIdSuffix(destination);
+            let sourceDivNum = getIdSuffix(sourceDiv);
+            let screenChange = false;
+            if (destinationDivNum !== sourceDivNum) {
+                swapDivs(destination, sourceDiv);
+                screenChange = true;
             } else {
-                if (destination && destination.id && !isNaN(destination.id.slice(-1))) {
-                    if (Math.abs(parseInt(touchy, 10) - parseInt(pageY, 10)) > 40) {
-                        let adder = 1;
-                        if (touchy > pageY) {
-                            adder = -1;
-                        }
-                        const thisIndex = destination.id.slice(-1);
-                        addItToScoreTxt(thisIndex, adder);
+                if (Math.abs(parseInt(touchy, 10) - parseInt(pageY, 10)) > 40) {
+                    let adder = 1;
+                    if (touchy < pageY) {
+                        adder = -1;
                     }
+                    const thisIndex = destination.id.slice(-1);
+                    addItToScoreTxt(sourceDivNum, adder);
+                    screenChange = true;
                 }
+
             }
-            buildSendScoreFromScreen();
+            if (screenChange) {
+                buildSendScoreFromScreen();
+            }
             touchx = undefined;
             touchy = undefined;
         });
@@ -256,11 +220,74 @@ function addListeners() {
             if (event.pageY > middle) {
                 adder = adder * -1;
             }
-            const thisIndex = thisDiv.id.slice(-1);
+            const thisIndex = getIdSuffix(thisDiv);
             addItToScoreTxt(thisIndex, adder);
             buildSendScoreFromScreen();
         });
     }/// end listener spin
+}
+
+function dragStartProcessor(event) {
+    let { yLoc, xLoc } = getXy(event);
+    eventx = xLoc;
+    eventy= yLoc
+    // console.log(`drag start y- ${eventy} x-${eventx}`)
+    console.log(eventy + ":y-start " + eventx + ":x-start ");
+}
+
+function dragEndProcessor(event) {
+    const sourceDiv = event.target;
+    if (!isDivOrScore(sourceDiv)) {
+        return;
+    }
+    let { yLoc, xLoc } = getXy(event);
+    // console.log(yLoc + ":y-end " + xLoc + ":x-end ");
+    let destination = document.elementFromPoint(xLoc, yLoc);
+    if (!isDivOrScore(destination)) {
+        return;
+    }
+    let destinationDivNum = getIdSuffix(destination);
+    let sourceDivNum = getIdSuffix(sourceDiv);
+
+    let screenChange = false;
+    // console.log(yLoc + ":y-end " + xLoc + ":x-end " + eventy + ":y-start " + eventx + "x-start");
+    if (destinationDivNum !== sourceDivNum) {
+        // console.log(`swap divs`);
+        swapDivs(destination, sourceDiv);
+        screenChange = true;
+    } else {
+        // console.log(`Move ${eventy} ${yLoc} ${destination.id} `);
+        if (Math.abs(parseInt(eventy, 10) - parseInt(yLoc, 10)) > 30) {
+            let adder = 1;
+            if (parseInt(eventy, 10) < parseInt(yLoc, 10)) {
+                adder = -1;
+            }
+            addItToScoreTxt(sourceDivNum, adder);
+            screenChange = true;
+        }
+    }
+    if (screenChange) {
+        buildSendScoreFromScreen();
+    }
+    eventx = undefined;
+    eventy = undefined;
+}
+
+
+function getXy(event) {
+    let xLoc = event.pageX;
+    let yLoc = event.pageY;
+    // console.log(yLoc + ":y-end " + xLoc + ":x-end ");
+    let userAgent = navigator.userAgent;
+    // console.log(event);
+    if (userAgent) {
+        // I understand this is a bug in firefox
+        if (userAgent.includes("Firefox") && userAgent.includes("Windows")) {
+            xLoc = event.screenX;
+            yLoc = event.screenY;
+        }
+    }
+    return { yLoc, xLoc };
 }
 
 function addItToScoreTxt(thisIndex, adder) {
@@ -271,6 +298,35 @@ function addItToScoreTxt(thisIndex, adder) {
         val = 0;
     }
     scoretext.innerHTML = val;
+}
+
+function getIdSuffix(elem) {
+    if (!elem) {
+        return 0;
+    }
+    if (!elem.id) {
+        return 0;
+    }
+    let s = elem.id.slice(-1);
+    if (isNaN(s)) {
+        return 0;
+    }
+    return parseInt(s, 10);
+}
+
+function isDivOrScore(elem) {
+    if (!elem) {
+        return false;
+    }
+    if (!elem.id) {
+        return false;
+    }
+    let id = elem.id;
+    id = id.slice(0, -1);
+    if (!(id === 'div' || id === `scoretext`)) {
+        return false;
+    }
+    return true;
 }
 
 function getOffset(el) {
