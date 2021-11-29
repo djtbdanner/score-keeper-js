@@ -71,6 +71,7 @@ function setFontDefaultSizes(teamsList) {
     let root = document.documentElement;
     const isAnyOver99 = teamsList.find((team) => { return parseInt(team.score, 10) > 99; }) !== undefined;
     const isAnyOver999 = teamsList.find((team) => { return parseInt(team.score, 10) > 999; }) !== undefined;
+    const isAnyOver9999 = teamsList.find((team) => { return parseInt(team.score, 10) > 9999; }) !== undefined;
 
     let teamCount = teamsList.length;
     root.style.setProperty(`--default-font-size-landscape`, `64vh`);
@@ -85,6 +86,10 @@ function setFontDefaultSizes(teamsList) {
         root.style.setProperty(`--default-font-size-landscape`, `38vh`);
         root.style.setProperty(`--default-font-size-portrait`, `12vh`);
     }
+    if (isAnyOver9999) {
+        root.style.setProperty(`--default-font-size-landscape`, `28vh`);
+        root.style.setProperty(`--default-font-size-portrait`, `10vh`);
+    }
 
     if (teamCount > 2) {
         root.style.setProperty(`--default-font-size-portrait-header`, `5vh`);
@@ -96,6 +101,9 @@ function setFontDefaultSizes(teamsList) {
         if (isAnyOver999) {
             root.style.setProperty(`--default-font-size-landscape`, `20vh`);
         }
+        if (isAnyOver9999) {
+            root.style.setProperty(`--default-font-size-landscape`, `18vh`);
+        }
     }
     if (teamCount > 4) {
         root.style.setProperty(`--default-font-size-portrait`, `14vh`);
@@ -104,6 +112,9 @@ function setFontDefaultSizes(teamsList) {
         }
         if (isAnyOver999) {
             root.style.setProperty(`--default-font-size-portrait`, `10vh`);
+        }
+        if (isAnyOver9999) {
+            root.style.setProperty(`--default-font-size-portrait`, `8vh`);
         }
     }
     if (teamCount >= 7) {
@@ -116,6 +127,10 @@ function setFontDefaultSizes(teamsList) {
         if (isAnyOver999) {
             root.style.setProperty(`--default-font-size-landscape`, `20vh`);
             root.style.setProperty(`--default-font-size-portrait`, `6vh`);
+        }
+        if (isAnyOver9999) {
+            root.style.setProperty(`--default-font-size-landscape`, `16vh`);
+            root.style.setProperty(`--default-font-size-portrait`, `4vh`);
         }
     }
 }

@@ -264,7 +264,7 @@ function buildAndSendScore() {
     drawScreen(scores, true, roomName);
     const pointsPer = document.getElementById(`points-per-tap`).value;
     if (pointsPer && parseInt(pointsPer, 10) > 1) {
-        modalMessage(`Each click on the score will add ${pointsPer} points, clicking at bottom of score will subtract ${pointsPer} points. If you need to add or remove a single point, slide up on the score to remove a point and slide down to add a point.`);
+        modalMessage(`Each click on the score will add ${pointsPer} points, clicking at bottom of score will subtract ${pointsPer} points. If you need to add or remove a single point, slide up on the score to add, slide down to remove.`);
     }
 }
 
