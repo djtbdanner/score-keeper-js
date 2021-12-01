@@ -40,7 +40,7 @@ async function buildInitialScreen() {
     html += `<tr><td style="text-align:right;width:30%;">`;
     html += `Game: `;
     html += `</td><td>`;
-    html += `<input type="text" maxlength="10" id="game-name" placeholder="GameName" onKeyUp="checkTeamName()" autofocus />`;
+    html += `<input type="text" maxlength="20" id="game-name" placeholder="GameName" onKeyUp="checkTeamName()" autofocus />`;
     html += `</td></tr>`;
     html += `<tr><td style="text-align:right;">`;
     html += `Points: `;
@@ -138,7 +138,7 @@ function buildAddTeamForm(index) {
     html += `<tr><td style="text-align:right;width:30%;">`;
     html += `Team Name:`;
     html += `</td><td>`;
-    html += `<input type="input" maxlength="10" id="in-teamName${index}" placeholder="Team${index + 1} Name" autofocus onKeyUp="checkTeamEntries(${index})"/>`;
+    html += `<input type="input" maxlength="12" id="in-teamName${index}" placeholder="Team${index + 1} Name" autofocus onKeyUp="checkTeamEntries(${index})"/>`;
     html += `</td></tr>`;
     html += `<tr><td style="text-align:right;width:30%;">`;
     html += `Primary Color:`;

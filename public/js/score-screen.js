@@ -84,8 +84,8 @@ function setFontDefaultSizes(teamsList) {
     let teamCount = teamsList.length;
     root.style.setProperty(`--default-font-size-landscape`, `64vh`);
     root.style.setProperty(`--default-font-size-portrait`, `32vh`);
-    root.style.setProperty(`--default-font-size-portrait-header`, `10vh`);
-    root.style.setProperty(`--default-font-size-landscape-header`, `5vh`);
+    root.style.setProperty(`--default-font-size-portrait-header`, `6vh`);
+    root.style.setProperty(`--default-font-size-landscape-header`, `10vh`);
     if (isAnyOver99) {
         root.style.setProperty(`--default-font-size-landscape`, `48vh`);
         root.style.setProperty(`--default-font-size-portrait`, `24vh`);
@@ -101,7 +101,7 @@ function setFontDefaultSizes(teamsList) {
 
     if (teamCount > 2) {
         root.style.setProperty(`--default-font-size-portrait-header`, `4vh`);
-        root.style.setProperty(`--default-font-size-landscape-header`, `6vh`);
+        root.style.setProperty(`--default-font-size-landscape-header`, `8vh`);
         root.style.setProperty(`--default-font-size-landscape`, `32vh`);
         root.style.setProperty(`--default-font-size-portrait`, `17vh`);
 
@@ -122,6 +122,7 @@ function setFontDefaultSizes(teamsList) {
     }
 
     if (teamCount > 4) {
+        root.style.setProperty(`--default-font-size-landscape-header`, `6vh`);
         if (isAnyOver999) {
             root.style.setProperty(`--default-font-size-portrait`, `12vh`);
         }
@@ -132,6 +133,7 @@ function setFontDefaultSizes(teamsList) {
      }
 
     if (teamCount > 6) {
+        root.style.setProperty(`--default-font-size-portrait-header`, `3vh`);
         root.style.setProperty(`--default-font-size-landscape`, `35vh`);
         root.style.setProperty(`--default-font-size-portrait`, `17vh`);
         if (isAnyOver99) {
