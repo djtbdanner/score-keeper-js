@@ -18,10 +18,10 @@ io.sockets.on('connect', (socket) => {
     // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"}]`;
     // rooms.set('3', room);
     // room = new Room(`4`);
-    // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Don","score":"920","color":"green","textColor":"red"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"}]`;
+    // room.scores = `[{"teamName":"Dave","score":"987878","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Don","score":"920","color":"green","textColor":"red"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"}]`;
     // rooms.set('4', room);
     // room = new Room(`5`);
-    // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Don","score":"920","color":"green","textColor":"red"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"}]`;
+    // room.scores = `[{"teamName":"Dave","score":"123456","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Don","score":"920","color":"green","textColor":"red"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"}]`;
     // rooms.set('5', room);
     // room = new Room(`6`);
     // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Don","score":"920","color":"green","textColor":"red"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"}]`;

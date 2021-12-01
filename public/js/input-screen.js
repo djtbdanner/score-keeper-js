@@ -145,12 +145,15 @@ function buildAddTeamForm(index) {
     html += `</td><td>`;
     const primaryRando = getRandomColor();
     html += `<input type="color" id="primary-color${index}" value="${primaryRando}" onChange="checkTeamEntries(${index})">`
-    html += `</td></tr>`;
+  
     html += `<tr><td style="text-align:right;width:30%;">`;
     html += `Secondary Color:`;
     html += `</td><td>`;
     const secondaryRando = getRandomColor(primaryRando);
     html += `<input type="color" id="secondary-color${index}" value="${secondaryRando}" onChange="checkTeamEntries(${index})">`
+    html += `</td></tr><td></td><td>`;
+    html += `<i>Click or tap a color swath to select and change color.</i>`
+    html += `</td></tr>`;
     html += `<tr><td>`;
     html += `<tr><td style = "text-align:center;" colspan = "2">`;
     html += `<input type="submit" value = "Add" id="add-team-button${index}" disabled=true formaction="javascript:addTeam(${index})"/>`;
@@ -208,7 +211,13 @@ function addTeam(index) {
     html += `<input type="hidden" id="score${index}" value="0" /><br>`;
     html += `<input type="hidden" id="color${index}" value="${primaryColor}" /><br>`;
     html += `<input type="hidden" id="textColor${index}" value="${secondaryColor}" />`;
-
+    
+    let fontSize = `8vh`;
+    
+    var orientation = (screen.orientation || {}).type || screen.mozOrientation || screen.msOrientation;
+    if (orientation && orientation.includes(`portrait`)){
+        fontSize = `3vh`;
+    }
     const div = document.createElement(`div`);
     // couldnt' get the style to set
     div.innerHTML = html;
@@ -220,7 +229,7 @@ function addTeam(index) {
     div.style.width = `25%`;
     div.style.height = `50%`;
     div.style.float = `left`;
-    div.style.fontSize = `8vh`;
+    div.style.fontSize = fontSize;
     div.style.textAlign = `center`;
     div.style.borderRadius = `5px`;
     // remove the current add team div

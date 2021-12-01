@@ -8,46 +8,54 @@ function drawScreen(teamsList, includeListeners, roomName) {
     let widthtop = `50%`;
     let widthBottom = `100%`;
     let displayHeight = 100 - menuHeight;
-    let height = `${displayHeight}%`;// total - menu
+    // let height = `${displayHeight}%`;// total - menu
 
-    if (teamCount > 2) {
-        displayHeight = displayHeight / 2;
-        height = `${displayHeight}%`; // (total - menu) / 2
+    let root = document.documentElement;
+
+    root.style.setProperty(`--default-width-landscape`, `100%`);
+    root.style.setProperty(`--default-height-landscape`, `${displayHeight}%`);
+    root.style.setProperty(`--default-width-portriat`, `100%`);
+    root.style.setProperty(`--default-height-portriat`, `${displayHeight}%`);
+
+    if (teamCount === 2) {
+        root.style.setProperty(`--default-width-landscape`, `50%`);
+        root.style.setProperty(`--default-height-landscape`, `${displayHeight}%`);
+        root.style.setProperty(`--default-width-portrait`, `100%`);
+        //root.style.setProperty(`--default-height-portriat`, `${displayHeight/2}%`);
+        root.style.setProperty(`--default-height-portrait`, `${displayHeight / 2}%`);
     }
 
-    if (teamCount === 1) {
-        widthtop = `100%`;
+    if (teamCount === 3) {
+        root.style.setProperty(`--default-width-landscape`, `33.33%`);
+        root.style.setProperty(`--default-height-landscape`, `${displayHeight}%`);
+        root.style.setProperty(`--default-width-portrait`, `100%`);
+        root.style.setProperty(`--default-height-portrait`, `${displayHeight / 3}%`);
     }
-
     if (teamCount === 4) {
-        widthBottom = `50%`;
+        root.style.setProperty(`--default-width-landscape`, `50%`);
+        root.style.setProperty(`--default-height-landscape`, `${displayHeight / 2}%`);
+        root.style.setProperty(`--default-width-portrait`, `100%`);
+        root.style.setProperty(`--default-height-portrait`, `${displayHeight / 4}%`);
     }
 
-    if (teamCount === 5) {
-        widthtop = `33.33%`;
-        widthBottom = `50%`;
+    if (teamCount === 6 || teamCount === 5) {
+        root.style.setProperty(`--default-width-landscape`, `33.33%`);
+        root.style.setProperty(`--default-height-landscape`, `${displayHeight / 2}%`);
+        root.style.setProperty(`--default-width-portrait`, `50%`);
+        root.style.setProperty(`--default-height-portrait`, `${displayHeight / 3}%`);
     }
-
-    if (teamCount === 6) {
-        widthtop = `33.33%`;
-        widthBottom = `33.33%`;
-    }
-    if (teamCount === 7) {
-        widthtop = `25%`;
-        widthBottom = `33.33%`;
-    }
-    if (teamCount === 8) {
-        widthtop = `25%`;
-        widthBottom = `25%`;
+    if (teamCount === 8 || teamCount === 7) {
+        root.style.setProperty(`--default-width-landscape`, `25%`);
+        root.style.setProperty(`--default-height-landscape`, `${displayHeight / 2}%`);
+        root.style.setProperty(`--default-width-portrait`, `50%`);
+        root.style.setProperty(`--default-height-portrait`, `${displayHeight / 4}%`);
     }
 
     let scorepage = ``;
     scorepage += `<div class="menuDiv" id="score-div"><img src="images/menu_icon.png" class="menuimg" alt="menu" onClick="buildMenu()">${roomName}</div>`;
-    // const isDraggable = includeListeners;
-    for (let i = 0; i < teamCount; i++) {
-        let thisWidth = widthtop;
-        if (teamCount === 3 && i > 1 || teamCount === 5 && i > 2 || teamCount === 7 && i > 3) { thisWidth = widthBottom; }
-        scorepage += `<div id="div${i}" draggable = "${includeListeners}" style="background-color: ${teamsList[i].color}; width:${thisWidth}; height:${height};float:left;border-radius:4px">`;
+    for (let i = 0; i < teamsList.length; i++) {
+        let theClass = `scoreDiv`;
+        scorepage += `<div id="div${i}" class="${theClass}" draggable = "${includeListeners}" style="background-color: ${teamsList[i].color}">`;
         scorepage += `<div class="header" id="headerdiv${i}" style="background-color: ${teamsList[i].textColor};border-top-left-radius:4px;border-top-right-radius:4px;">`;
         scorepage += `<p class="headertext" id="headertext${i}" style="color:${teamsList[i].color}">${teamsList[i].teamName}</p>`;
         scorepage += `</div>`;
@@ -75,62 +83,68 @@ function setFontDefaultSizes(teamsList) {
 
     let teamCount = teamsList.length;
     root.style.setProperty(`--default-font-size-landscape`, `64vh`);
-    root.style.setProperty(`--default-font-size-portrait`, `20vh`);
+    root.style.setProperty(`--default-font-size-portrait`, `32vh`);
     root.style.setProperty(`--default-font-size-portrait-header`, `10vh`);
-    root.style.setProperty(`--default-font-size-landscape-header`, `12vh`);
+    root.style.setProperty(`--default-font-size-landscape-header`, `5vh`);
     if (isAnyOver99) {
         root.style.setProperty(`--default-font-size-landscape`, `48vh`);
-        root.style.setProperty(`--default-font-size-portrait`, `16vh`);
+        root.style.setProperty(`--default-font-size-portrait`, `24vh`);
     }
     if (isAnyOver999) {
         root.style.setProperty(`--default-font-size-landscape`, `38vh`);
-        root.style.setProperty(`--default-font-size-portrait`, `12vh`);
+        root.style.setProperty(`--default-font-size-portrait`, `19vh`);
     }
     if (isAnyOver9999) {
         root.style.setProperty(`--default-font-size-landscape`, `28vh`);
-        root.style.setProperty(`--default-font-size-portrait`, `10vh`);
+        root.style.setProperty(`--default-font-size-portrait`, `14vh`);
     }
 
     if (teamCount > 2) {
-        root.style.setProperty(`--default-font-size-portrait-header`, `5vh`);
+        root.style.setProperty(`--default-font-size-portrait-header`, `4vh`);
         root.style.setProperty(`--default-font-size-landscape-header`, `6vh`);
-        root.style.setProperty(`--default-font-size-landscape`, `30vh`);
+        root.style.setProperty(`--default-font-size-landscape`, `32vh`);
+        root.style.setProperty(`--default-font-size-portrait`, `17vh`);
+
         if (isAnyOver99) {
-            root.style.setProperty(`--default-font-size-landscape`, `24vh`);
+            root.style.setProperty(`--default-font-size-landscape`, `28vh`);
+            root.style.setProperty(`--default-font-size-portrait`, `16vh`);
+
         }
         if (isAnyOver999) {
-            root.style.setProperty(`--default-font-size-landscape`, `20vh`);
+            root.style.setProperty(`--default-font-size-landscape`, `26vh`);
+            root.style.setProperty(`--default-font-size-portrait`, `14vh`);
+
         }
         if (isAnyOver9999) {
-            root.style.setProperty(`--default-font-size-landscape`, `18vh`);
+            root.style.setProperty(`--default-font-size-landscape`, `26vh`);
+            root.style.setProperty(`--default-font-size-portrait`, `14vh`);
         }
     }
+
     if (teamCount > 4) {
-        root.style.setProperty(`--default-font-size-portrait`, `14vh`);
-        if (isAnyOver99) {
+        if (isAnyOver999) {
             root.style.setProperty(`--default-font-size-portrait`, `12vh`);
         }
-        if (isAnyOver999) {
+        if (isAnyOver9999) {
+            root.style.setProperty(`--default-font-size-landscape`, `21vh`);
             root.style.setProperty(`--default-font-size-portrait`, `10vh`);
         }
-        if (isAnyOver9999) {
-            root.style.setProperty(`--default-font-size-portrait`, `8vh`);
-        }
-    }
-    if (teamCount >= 7) {
-        root.style.setProperty(`--default-font-size-landscape`, `26vh`);
-        root.style.setProperty(`--default-font-size-portrait`, `9vh`);
+     }
+
+    if (teamCount > 6) {
+        root.style.setProperty(`--default-font-size-landscape`, `35vh`);
+        root.style.setProperty(`--default-font-size-portrait`, `17vh`);
         if (isAnyOver99) {
-            root.style.setProperty(`--default-font-size-landscape`, `24vh`);
-            root.style.setProperty(`--default-font-size-portrait`, `8vh`);
+            root.style.setProperty(`--default-font-size-landscape`, `26vh`);
+            root.style.setProperty(`--default-font-size-portrait`, `15vh`);
         }
         if (isAnyOver999) {
             root.style.setProperty(`--default-font-size-landscape`, `20vh`);
-            root.style.setProperty(`--default-font-size-portrait`, `6vh`);
+            root.style.setProperty(`--default-font-size-portrait`, `12vh`);
         }
         if (isAnyOver9999) {
             root.style.setProperty(`--default-font-size-landscape`, `16vh`);
-            root.style.setProperty(`--default-font-size-portrait`, `4vh`);
+            root.style.setProperty(`--default-font-size-portrait`, `10vh`);
         }
     }
 }
@@ -138,7 +152,7 @@ function setFontDefaultSizes(teamsList) {
 function getMenuHeightPercent() {
     try {
         const td = `<div class="menuDiv" id="xxx">x</div>`;
-        createAndAppendDiv(html, 'default', false);
+        createAndAppendDiv(td, 'default', false);
         elementHeight = getComputedStyle(document.getElementById(`xxx`)).height;
         elementHeight = elementHeight.slice(0, -2);
         var totalHeight = screen.height;
@@ -245,7 +259,7 @@ function addListeners() {
 function dragStartProcessor(event) {
     let { yLoc, xLoc } = getXy(event);
     eventx = xLoc;
-    eventy= yLoc
+    eventy = yLoc;
     // console.log(`drag start y- ${eventy} x-${eventx}`)
     console.log(eventy + ":y-start " + eventx + ":x-start ");
 }
