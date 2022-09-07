@@ -1,70 +1,100 @@
 :root {
-    --default-font-size-portrait:25vh;
-    --default-font-size-landscape:40vh;
-    --default-font-size-portrait-header:10vh;
-    --default-font-size-landscape-header:12vh;
-    --default-border-color: rgb(3, 3, 3);
-    --default-width-portrait: 50%;
-    --default-height-portrait: 100%;
-    --default-width-landscape: 50%;
-    --default-height-landscape: 100%;
-    --default-width-landscape-odd:50%;
-    /* --default-background-color: red; */
-    --default-background-color: rgba(139, 139, 139, 0.4); 
-    /* --default-background-color: transparent; */
-    --default-button-color: rgb(150, 146, 184);
-    --default-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
+  --default-font-size-portrait: 25vh;
+  --default-font-size-landscape: 40vh;
+  --default-font-size-portrait-header: 10vh;
+  --default-font-size-landscape-header: 12vh;
+  --default-border-color: rgb(3, 3, 3);
+  --default-width-portrait: 50%;
+  --default-height-portrait: 100%;
+  --default-width-landscape: 50%;
+  --default-height-landscape: 100%;
+  --default-width-landscape-odd: 50%;
+  /* --default-background-color: red; */
+  --default-background-color: rgba(139, 139, 139, 0.4);
+  /* --default-background-color: transparent; */
+  --default-button-color: rgb(150, 146, 184);
+  --default-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
 }
 
 /* Vertical - like the phone */
 @media screen and (orientation: portrait) {
   .scoretext {
-    padding:0;
-    margin:0;
-    font-size:  var(--default-font-size-portrait);
+    padding: 0;
+    margin: 0;
+    font-size: var(--default-font-size-portrait);
     font-weight: 550;
     text-align: center;
-   }
-
-   .header {
-    width: 100%;
-    height: 11%;
-    padding-bottom:3%;
-    padding-top:0%;
   }
 
-  .headertext{
+  .header {
+    width: 100%;
+    height: 11%;
+    padding-bottom: 3%;
+    padding-top: 0%;
+  }
+
+  .headertext {
     margin: auto;
-    padding-bottom:0vh;
+    padding-bottom: 0vh;
     font-size: var(--default-font-size-portrait-header);
     text-align: center;
     font-weight: 550;
   }
 
-  .menuDiv{
-    background-color:rgb(194, 192, 192);  
-    color:black;
-    width:100%;
-    height:4%;
+  .menuDiv {
+    background-color: rgb(194, 192, 192);
+    color: black;
+    width: 100%;
+    height: 4%;
     text-align: center;
     font-weight: 550;
     font-size: 3.5vh;
   }
-  .scoreDiv{
+
+  .scoreDiv {
     width: var(--default-width-portrait);
     /* height: var(--default-height-portrait); */
-    height:var(--default-height-portrait);
-    float:left;
-    border-radius:5px
+    height: var(--default-height-portrait);
+    float: left;
+    border-radius: 5px
   }
- }
+
+  .progressDiv {
+    width: 100%;
+    height: 4%;
+    background-color: white;
+    box-shadow: var(--default-shadow);
+    border-color: black;
+    border-style: solid;
+    border-left: none;
+    border-right: none;
+    border-width: 1%;
+  }
+
+  .timerDiv {
+    /* width: 3%; */
+    height: 4%;
+    background-color: white;
+    box-shadow: var(--default-shadow);
+    border-color: black;
+    border-style: solid;
+    border-right: none;
+    border-left: none;
+    border-width: 1%;
+    float: left;
+    text-align: center;
+    font-weight: 550;
+    font-size: 3.5vh;
+  }
+
+}
 
 /* Horizontal, like good old browser */
 @media screen and (orientation: landscape) {
   .scoretext {
-    padding:0;
-    margin:0;
-    font-size:  var(--default-font-size-landscape);
+    padding: 0;
+    margin: 0;
+    font-size: var(--default-font-size-landscape);
     text-align: center;
     font-weight: 550;
   }
@@ -72,50 +102,111 @@
   .header {
     width: 100%;
     height: 11%;
-    padding-bottom:3%;
-    padding-top:0%;
+    padding-bottom: 3%;
+    padding-top: 0%;
   }
 
-  .headertext{
+  .headertext {
     margin: auto;
-    padding-top:0vh;
+    padding-top: 0vh;
     font-size: var(--default-font-size-landscape-header);
     text-align-last: center;
     font-weight: 550;
   }
 
-  .menuDiv{
-    background-color:rgb(194, 192, 192); 
-    color:black;
-    width:100%;
-    height:4%;
+  .menuDiv {
+    background-color: rgb(194, 192, 192);
+    color: black;
+    width: 100%;
+    height: 4%;
     text-align: center;
     font-weight: 550;
-    font-size: 3.5vh; 
+    font-size: 3.5vh;
   }
-  .scoreDiv{
+
+  .scoreDiv {
     width: var(--default-width-landscape);
     height: var(--default-height-landscape);
-    float:left;
-    border-radius:5px;
+    float: left;
+    border-radius: 5px;
   }
-}
-/* Horizontal, and probably a mobile, or smaller device */
-@media screen and (max-device-height: 500px)  and (orientation: landscape){
-  .menuDiv{
-    background-color:rgb(194, 192, 192); 
-    color:black;
-    width:100%;
-    height:6%;
+
+  .progressDiv {
+    width: 100%;
+    height: 4%;
+    background-color: white;
+    box-shadow: var(--default-shadow);
+    border-color: black;
+    border-style: solid;
+    border-left: none;
+    border-right: none;
+    border-width: 1%;
+  }
+
+  .timerDiv {
+    /* width: 3%; */
+    height: 4%;
+    background-color: white;
+    box-shadow: var(--default-shadow);
+    border-color: black;
+    border-style: solid;
+    border-right: none;
+    border-left: none;
+    border-width: 1%;
+    float: left;
     text-align: center;
     font-weight: 550;
-    font-size: 5vh; 
+    font-size: 3.5vh;
   }
 }
 
-.menuimg{
-  height:100%;
-  box-shadow: 0 0 15px rgba(0,0,0,0.75);
+/* Horizontal, and probably a mobile, or smaller device */
+@media screen and (max-device-height: 500px) and (orientation: landscape) {
+  .menuDiv {
+    background-color: rgb(194, 192, 192);
+    color: black;
+    width: 100%;
+    height: 6%;
+    text-align: center;
+    font-weight: 550;
+    font-size: 5vh;
+  }
+  .progressDiv {
+    width: 100%;
+    height:6%;
+    background-color: white;
+    box-shadow: var(--default-shadow);
+    border-color: black;
+    border-style: solid;
+    border-left: none;
+    border-right: none;
+    border-width: 1%;
+  }
+
+  .timerDiv {
+    /* width: 3%; */
+    height: 6%;
+    background-color: white;
+    box-shadow: var(--default-shadow);
+    border-color: black;
+    border-style: solid;
+    border-right: none;
+    border-left: none;
+    border-width: 1%;
+    float: left;
+    text-align: center;
+    font-weight: 550;
+    font-size: 5vh;
+  }
+}
+
+.timerPercentDiv{
+  border-radius: 2px;
+}
+
+.menuimg {
+  height: 100%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.75);
   clip-path: inset(0px -15px 0px 0px);
   float: left;
   border-top-right-radius: 5px;
@@ -126,7 +217,7 @@ body {
   height: 100%;
   padding: 0;
   margin: 0;
-  font-family:Arial, Helvetica, sans-serif, Geneva, Tahoma, sans-serif;
+  font-family: Arial, Helvetica, sans-serif, Geneva, Tahoma, sans-serif;
   background-color: var(--default-background-color);
 }
 
@@ -135,35 +226,35 @@ body {
   height: 75%;
   position: absolute;
   left: 0px;
-  top: 0px; 
+  top: 0px;
   /* margin-left: -150px;
   margin-top: -150px; */
-  background-color: rgba(139, 139, 139, 0.8);  
-  border:3px solid var(--default-border-color);
+  background-color: rgba(139, 139, 139, 0.8);
+  border: 3px solid var(--default-border-color);
   border-radius: 3px;
   box-shadow: var(--default-shadow);
-} */
+}
 
-p{
-  padding-left:5px; 
-  padding-right:5px;
+*/ p {
+  padding-left: 5px;
+  padding-right: 5px;
   /* font-style: italic; */
 }
 
-input{
-  padding: 5px 5px; 
-  margin: 5px; 
+input {
+  padding: 5px 5px;
+  margin: 5px;
   border: 1px solid var(--default-border-color);
   background: white;
   border-radius: 5px;
   box-shadow: var(--default-shadow);
 }
 
-input[type=button]{
+input[type=button] {
   background: var(--default-button-color);
 }
 
-input[type=submit]{
+input[type=submit] {
   background: var(--default-button-color);
 }
 
@@ -173,36 +264,37 @@ select {
   border: 1px solid var(--default-border-color);
   background: white;
   border-radius: 5px;
-  box-shadow:var(--default-shadow)
+  box-shadow: var(--default-shadow)
 }
 
 input[type="color"] {
   -webkit-appearance: none;
-  position:relative;
+  position: relative;
   padding: 4px 4px;
   border: 1px solid var(--default-border-color);
   background: white;
   border-radius: 5px;
-  box-shadow:var(--default-shadow);
-  width:95%;
+  box-shadow: var(--default-shadow);
+  width: 95%;
 
 }
+
 input[type="color"]::-webkit-color-swatch {
-  position:absolute;
-  top:-1px;
-  left:-1px;
-  right:-1px;
-  bottom:-1px;
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
   box-sizing: border-box;
-  border:1px solid transparent;
-  margin: 1px;  
+  border: 1px solid transparent;
+  margin: 1px;
   border-radius: 5px;
 }
 
-.menu{
-  box-shadow:var(--default-shadow);
-  background-color:rgb(194, 192, 192); 
-  color:black; 
+.menu {
+  box-shadow: var(--default-shadow);
+  background-color: rgb(194, 192, 192);
+  color: black;
   position: fixed;
   top: 0;
   left: 0;
@@ -212,7 +304,7 @@ input[type="color"]::-webkit-color-swatch {
   height:20%; */
 }
 
-.menuItem{
+.menuItem {
   color: black;
   padding: 3px;
   text-decoration: none;
@@ -221,7 +313,7 @@ input[type="color"]::-webkit-color-swatch {
   text-align: center;
   align-content: center;
   color: black;
-  text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
+  text-shadow: 0 0.04em 0.04em rgba(0, 0, 0, 0.35);
 }
 
 .modal {
@@ -229,10 +321,10 @@ input[type="color"]::-webkit-color-swatch {
   height: 100%;
   position: absolute;
   left: 0px;
-  top: 0px; 
+  top: 0px;
   /* margin-left: -175px;
   margin-top: -175px; */
-  background-color: var(--default-background-color) ; 
+  background-color: var(--default-background-color);
   /* border:3px solid var(--default-border-color); */
   /* border-radius: 3px; */
   /* box-shadow: var(--default-shadow); */

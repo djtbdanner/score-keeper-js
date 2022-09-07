@@ -40,13 +40,18 @@ async function buildInitialScreen() {
     html += `<tr><td style="text-align:right;width:30%;">`;
     html += `Game: `;
     html += `</td><td>`;
-    html += `<input type="text" maxlength="20" id="game-name" placeholder="GameName" onKeyUp="checkTeamName()" autofocus />`;
+    html += `<input type="text" maxlength="20" id="game-name" placeholder="GameName" onKeyUp="shouldShowSubmitButton()" autofocus />`;
     html += `</td></tr>`;
     html += `<tr><td style="text-align:right;">`;
     html += `Points: `;
     html += `</td><td>`;
     html += `<input type="number" maxlength="3" id="goal-points" value = "1" min="1" max="100" />`;
     html += `</td></tr>`;
+    html += `<tr><td style="text-align:right;">`;
+    html += `Timer: `;
+    html += `</td><td>`;
+    html += `<input type="checkbox" id="timer-checkbox" onclick="showTimerSpan()"/><span style="visibility:hidden" id= "time"><input type="number" maxlength="3" disabled id="timer-minutes" value = "0" min="0" max="999" onChange="shouldShowSubmitButton()" />:<input type="number" disabled maxlength="2" id="timer-seconds" value = "0" min="0" max="60" onChange="shouldShowSubmitButton()" />minutes:seconds</span>`;
+    html += `</td></tr>`;  
     html += `<tr><td colspan="2" style = "text-align:center;">`;
     html += `<span id = "game-msg-span">&nbsp</span>`;
     html += `</td></tr>`;
@@ -59,6 +64,38 @@ async function buildInitialScreen() {
     createAndAppendDiv(html, 'default', false);
 }
 
+function showTimerSpan(){
+    const check = document.getElementById(`timer-checkbox`);
+    const minutesBox = document.getElementById(`timer-minutes`);
+    const secondsBox = document.getElementById(`timer-seconds`);
+    const theSpan = document.getElementById(`time`)
+    if (check.checked){
+        minutesBox.disabled = false;
+        secondsBox.disabled = false;
+        theSpan.style.visibility='visible';
+    } else {
+        minutesBox.value = 0;
+        secondsBox.value = 0;
+        minutesBox.disabled = true;
+        secondsBox.disabled = true;
+        theSpan.style.visibility='hidden';
+    }
+    shouldShowSubmitButton();
+}
+
+// check some time is set if timer is selected
+function isTimerSetOrNotChosen(){
+    const check = document.getElementById(`timer-checkbox`);
+    const minutesBox = document.getElementById(`timer-minutes`);
+    const secondsBox = document.getElementById(`timer-seconds`);
+    if (check.checked){
+        if (parseInt(minutesBox.value, 10) + parseInt(secondsBox.value, 10) === 0){
+            return false;
+        }
+    }
+    return true;
+}
+
 function rebuildGameFromLocalStorage() {
 
     const storedScores = localStorage.getItem('scores');
@@ -67,17 +104,35 @@ function rebuildGameFromLocalStorage() {
     document.getElementById(`room-name`).value = roomName;
     document.getElementById(`room-owner`).value = "true";
     document.getElementById(`points-per-tap`).value = localStorage.getItem(`points-per-tap`) || 1;
+
+    document.getElementById(`use-timer`).value = localStorage.getItem('use-timer');
+    totalSeconds = document.getElementById(`total-seconds`).value = localStorage.getItem('total-seconds');
+
     const scores = JSON.parse(storedScores);
     sendRoomMessage(roomName, `Score keeper reconnected to ${roomName}.`);
-    scoreChange(roomName, scores, true);
-    drawScreen(scores, true, roomName);
+
+    const timeSettings = {};
+    let hasTimer = false;
+    if (document.getElementById(`use-timer`).value === `true`){
+        timeSettings.seconds = document.getElementById(`total-seconds`).value;
+        hasTimer = true;
+    }
+
+    scoreChange(roomName, scores, true, timeSettings);
+    drawScreen(scores, true, roomName, hasTimer);
 }
 
 function setRoomAddPlayer() {
-
-    const selectedRoomName = document.getElementById(`game-name`).value;
+    // set the global html values (user options)
     document.getElementById(`room-name`).value = document.getElementById(`game-name`).value;
     document.getElementById(`points-per-tap`).value = document.getElementById(`goal-points`).value;
+
+    document.getElementById(`use-timer`).value = document.getElementById(`timer-checkbox`).checked;
+    const minutes = document.getElementById(`timer-minutes`).value;
+    const seconds = document.getElementById(`timer-seconds`).value
+    const totalSeconds = parseInt(minutes, 10) * 60 + parseInt(seconds, 10);
+    document.getElementById(`total-seconds`).value = totalSeconds;
+
     destroyById('initial-screen');
     addPlayerOrTeam(0);
 }
@@ -266,23 +321,27 @@ function buildAndSendScore() {
 
     }
     const roomName = document.getElementById(`room-name`).value;
-    document.getElementById(`room-owner`).value = true;
-    scoreChange(roomName, scores, true);
+    const timeSettings = {};
+    let hasTimer = false;
+    if (document.getElementById(`use-timer`).value === 'true'){
+        timeSettings.seconds = document.getElementById(`total-seconds`).value;
+        hasTimer = true;
+    }
+    scoreChange(roomName, scores, true, timeSettings);
     clearAllDivs();
-    clearAllDivs();
-    drawScreen(scores, true, roomName);
+    drawScreen(scores, true, roomName, hasTimer);
     const pointsPer = document.getElementById(`points-per-tap`).value;
     if (pointsPer && parseInt(pointsPer, 10) > 1) {
         modalMessage(`Each click on the score will add ${pointsPer} points, clicking at bottom of score will subtract ${pointsPer} points. If you need to add or remove a single point, slide up on the score to add, slide down to remove.`);
     }
 }
 
-async function checkTeamName() {
+async function shouldShowSubmitButton() {
     const gameName = document.getElementById(`game-name`).value;
     const addPlayerButton = document.getElementById(`add-player-button`);
     const gameMessageSpan = document.getElementById(`game-msg-span`);
     gameMessageSpan.innerHTML = `&nbsp;`;
-    if (gameName && gameName.length > 0) {
+    if (gameName && gameName.length > 0 && isTimerSetOrNotChosen()) {
         const available = await isRoomAvailable(gameName);
         // console.log(`is available ${available}`);
         if (available) {
@@ -296,6 +355,7 @@ async function checkTeamName() {
         addPlayerButton.disabled = true;
     }
 }
+
 
 const isToday = (someDate) => {
     if (!someDate) {

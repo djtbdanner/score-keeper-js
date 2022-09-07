@@ -1,10 +1,9 @@
 let firstScreen = true;
-function drawScreen(teamsList, includeListeners, roomName) {
-
+function drawScreen(teamsList, includeListeners, roomName, hasTimer) {
     destroyById(`score-div`);
     setFontDefaultSizes(teamsList);
     let teamCount = teamsList.length;
-    const menuHeight = getMenuHeightPercent();
+    const menuHeight = getMenuHeightPercent(hasTimer);//--todo--fortimer
     let widthtop = `50%`;
     let widthBottom = `100%`;
     let displayHeight = 100 - menuHeight;
@@ -53,6 +52,12 @@ function drawScreen(teamsList, includeListeners, roomName) {
 
     let scorepage = ``;
     scorepage += `<div class="menuDiv" id="score-div"><img src="images/menu_icon.png" class="menuimg" alt="menu" onClick="buildMenu()">${roomName}</div>`;
+    if (hasTimer) {
+        scorepage += `<div class="timerDiv" id="timer-disp-div"></div>
+                  <div class="progressDiv" id="timer-progress-div">
+                    <div class="timerPercentDiv" id="timer-percent"></div>
+                  </div>`;
+    }
     for (let i = 0; i < teamsList.length; i++) {
         let theClass = `scoreDiv`;
         scorepage += `<div id="div${i}" class="${theClass}" draggable = "${includeListeners}" style="background-color: ${teamsList[i].color}">`;
@@ -66,7 +71,7 @@ function drawScreen(teamsList, includeListeners, roomName) {
     createAndAppendDiv(scorepage, 'score-page-div', true);
 
     if (includeListeners) {
-        addListeners();
+        addListeners(hasTimer);
     }
 
     if (firstScreen) {
@@ -130,7 +135,7 @@ function setFontDefaultSizes(teamsList) {
             root.style.setProperty(`--default-font-size-landscape`, `21vh`);
             root.style.setProperty(`--default-font-size-portrait`, `10vh`);
         }
-     }
+    }
 
     if (teamCount > 6) {
         root.style.setProperty(`--default-font-size-portrait-header`, `3vh`);
@@ -151,7 +156,7 @@ function setFontDefaultSizes(teamsList) {
     }
 }
 
-function getMenuHeightPercent() {
+function getMenuHeightPercent(hasTimer) {
     try {
         const td = `<div class="menuDiv" id="xxx">x</div>`;
         createAndAppendDiv(td, 'default', false);
@@ -160,6 +165,9 @@ function getMenuHeightPercent() {
         var totalHeight = screen.height;
         let roughPer = Math.round(parseFloat(elementHeight) / parseFloat(totalHeight) * 100);
         destroyById(`xxx`);
+        if (hasTimer) {
+            roughPer = roughPer * 2 + 2;// timer same as menu with another 2% for the border top/bottom
+        }
         return roughPer;
     } catch (e) {
         console.log(`Failed to determine menu height in % ${e}`);
@@ -171,7 +179,7 @@ let touchx;
 let touchy;
 let eventx;
 let eventy;
-function addListeners() {
+function addListeners(hasTimer) {
 
     for (d = 0; d < 8; d++) {
         const div = document.getElementById(`div${d}`);
@@ -256,6 +264,28 @@ function addListeners() {
             buildSendScoreFromScreen();
         });
     }/// end listener spin
+
+    if (hasTimer) {
+        const timerDisplayDiv = document.getElementById(`timer-disp-div`);
+        // const timerProgressDiv = document.getElementById(`timer-progress-div`);
+        const timerPercentDiv = document.getElementById(`timer-percent`);
+
+        timerDisplayDiv.addEventListener('click', (event) => {
+            clickedTimer(event);
+        });
+        // timerProgressDiv.addEventListener('click', (event) => {
+        //     clickedTimer(event);
+        // });
+        timerPercentDiv.addEventListener('click', (event) => {
+            clickedTimer(event);
+        });
+
+    }
+}
+
+function clickedTimer(event) {
+    const roomName = document.getElementById(`room-name`).value;
+    startTimer(roomName);
 }
 
 function dragStartProcessor(event) {
@@ -432,6 +462,9 @@ function buildSendScoreFromScreen() {
     const roomName = document.getElementById(`room-name`).value;
     const isOwner = document.getElementById(`room-owner`).value.toLowerCase() === `true`;
     const pointsPerTap = document.getElementById(`points-per-tap`).value;
+    const userTimer = document.getElementById(`use-timer`).value;
+    const totalSeconds = document.getElementById(`total-seconds`).value;
+
 
     // save scores locally so browser can be closed and opened on the scores
     if (isOwner) {
@@ -440,7 +473,24 @@ function buildSendScoreFromScreen() {
         localStorage.setItem('room-name', roomName);
         localStorage.setItem('is-owner', isOwner);
         localStorage.setItem('points-per-tap', pointsPerTap);
+
+        localStorage.setItem('use-timer', userTimer);
+        localStorage.setItem('total-seconds', totalSeconds);
     }
     scoreChange(roomName, scores, isOwner);
     setFontDefaultSizes(scores);
+}
+
+function processTimer(display, percentComplete) {
+    let x = document.getElementById(`timer-percent`);
+    if (percentComplete > 95) {
+        x.style.backgroundColor = `red`;
+    } else if (percentComplete > 75) {
+        x.style.backgroundColor = `yellow`;
+    } else {
+        x.style.backgroundColor = `green`;
+    }
+    x.style.width = `${percentComplete}%`;
+    x.style.height = `100%`;
+    document.getElementById(`timer-disp-div`).innerHTML = `${display}`;
 }

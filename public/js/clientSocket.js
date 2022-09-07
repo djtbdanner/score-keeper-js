@@ -1,12 +1,13 @@
 let socket = io.connect(window.location.href);
 
 socket.on('score-change', (data) => {
-    const scoreData = JSON.parse(data.scores);
-    drawScreen(JSON.parse(scoreData), false, data.roomName );
+    const scoreData = data.scores;
+    const hasTimer = data.hasTimer;
+    drawScreen(scoreData, false, data.roomName, hasTimer);
 });
 
-function scoreChange(room, scores, isOwner) {
-    socket.emit(`score-change`, { room, scores: JSON.stringify(scores), isOwner:isOwner });
+function scoreChange(room, scores, isOwner, timeSettings) {
+    socket.emit(`score-change`, { room, scores, isOwner:isOwner, timeSettings });
 }
 
 socket.on('room-change', () => {
@@ -26,19 +27,15 @@ async function getAvailableRooms() {
     return  JSON.parse(result);
 }
 
-async function getAvailableRooms() {
-    const result = await asyncEmit('get-rooms');
-    return  JSON.parse(result);
-}
-
 socket.on(`backendError`, (data) => {
     alert(data);
 });
 
 async function joinRoom(roomName) {
-    const result = await asyncEmit(`join-room`, roomName);
-    const scores = JSON.parse(result);
-    drawScreen(scores, false, roomName);
+    const result = await asyncEmit(`join-room-by-name`, roomName);
+    const scores = result.scores;
+    const hasTimer = result.hasTimer;
+    drawScreen(scores, false, roomName, hasTimer);
 }
 
 async function isRoomAvailable(room) {
@@ -52,6 +49,10 @@ socket.on('new-text-message', () => {
     textMessages();
 });
 
+socket.on('timer-change', (data) => {
+    processTimer(data.display, data.percentComplete);
+});
+
 async function getMessages(room) {
     const result = await asyncEmit('get-text-messages', room);
     // console.log(`messages ${result}`);
@@ -61,6 +62,14 @@ async function getMessages(room) {
 function sendTextMessage(roomName, message){
     socket.emit(`message-text`, { roomName, message });
 }
+
+function startTimer(roomName){
+    socket.emit(`start-timer`, {roomName});
+}
+
+socket.on('play-sound', (data) => {
+    bugle_tune.play();
+});
 
 function asyncEmit(eventName, data) {
     return new Promise(function (resolve, reject) {
@@ -72,7 +81,7 @@ function asyncEmit(eventName, data) {
         setTimeout(reject, 1000);
     });
 }
-
+ 
 function disconnect() {
     socket.disconnect();
 }

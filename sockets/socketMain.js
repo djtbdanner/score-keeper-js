@@ -1,9 +1,61 @@
 // The primary socket processing on server side
 const io = require('../server').io
 const Room = require('./classes/room');
-
+const Timer = require('./classes/timer');
 // rooms database :)
 let rooms = new Map();
+
+async function broadcastTimer(room, socket, includeMe) {
+    const total = room.timer.totalSeconds;
+    const current = room.timer.currentSeconds;
+    let displaySeconds = room.timer.totalSeconds - room.timer.currentSeconds;
+
+    const obj = {};
+    obj.display = secondsToDisplay(displaySeconds);
+    obj.percentComplete = `${parseInt(current / total * 100, 10)}`;
+    // everyone else
+    socket.broadcast.to(room.name).emit(`timer-change`, obj);
+
+    if (includeMe){
+        if (room.timer.totalSeconds <= room.timer.currentSeconds){
+            obj.display = secondsToDisplay(room.timer.totalSeconds) + `\u25BA` ;
+        }
+        // owner
+        socket.emit(`timer-change`, obj);
+    }
+}
+
+function secondsToDisplay(displaySeconds){
+    let minutes = 0;
+    let seconds = displaySeconds;
+    if(displaySeconds > 60){
+        minutes = Math.floor(displaySeconds/60);
+        seconds = displaySeconds%60;
+    }
+    minutes = String(minutes).padStart(2,`0`);
+    seconds = String(seconds).padStart(2,`0`);
+    return `${minutes}:${seconds} `;
+}
+
+async function startTimer(room, socket) {
+    if (!room || !room.timer) {
+        throw Error(`No room or no timer in room to process timer functionality`);
+    }
+    while (room.timer.currentSeconds <= room.timer.totalSeconds) {
+        broadcastTimer(room, socket, true);
+        room.timer.currentSeconds = room.timer.currentSeconds + 1;
+        await delay(1000);
+    }
+    room.timer.currentSeconds = room.timer.totalSeconds;
+    // everyone else
+    socket.broadcast.to(room.name).emit(`play-sound`);
+    socket.emit(`play-sound`);
+}
+
+function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+}
+
 
 io.sockets.on('connect', (socket) => {
     console.log("initial connection ");
@@ -37,36 +89,43 @@ io.sockets.on('connect', (socket) => {
             const scores = data.scores;
             const isOwner = data.isOwner;
             let room = rooms.get(roomName);
+            const timeSettings = data.timeSettings;
             if (!room) {
                 room = new Room(roomName);
                 socket.broadcast.emit('room-change');
+                if (timeSettings.seconds){
+                    const seconds = parseInt(timeSettings.seconds, 10);
+                    const timer = new Timer(seconds, seconds, true);
+                    room.timer = timer;
+                    broadcastTimer(room, socket, true); 
+                }
             }
             room.scores = scores;
             if (isOwner) {
                 room.owner = socket.id;
                 socket.join(roomName);
             }
-            console.log(JSON.stringify(rooms));
             rooms.set(roomName, room);
-            console.log(`broadcasting to room ${roomName}, scores: ${JSON.stringify(scores)}`);
-            // socket.to(roomName).emit(`score-change`, { scores: JSON.stringify(scores), roomName });
-            socket.broadcast.to(roomName).emit(`score-change`, { scores: JSON.stringify(scores), roomName });
+            const hasTimer = !!room.timer
+            socket.broadcast.to(roomName).emit(`score-change`, { scores, roomName, hasTimer});
+            if (room.timer){
+                // --todo-- can we just send this with the score???
+                broadcastTimer(room, socket, false); 
+            }
         } catch (error) {
             handleError(socket, error, data);
         }
     });
 
-    socket.on('join-room', (data) => {
+    socket.on('join-room-by-name', (data) => {
         try {
-            // socket.rooms.forEach((userRoom) => {
-            //     socket.leave(userRoom);
-            // });
             room = rooms.get(data);
             if (!room) {
                 throw new Error(`Could not find room or game: ${data}.`);
             }
             socket.join(data);
-            socket.emit(`join-room`, JSON.stringify(JSON.parse(room.scores)));
+            const hasTimer = !!room.timer
+            socket.emit(`join-room-by-name`, {scores: room.scores, hasTimer});
         } catch (error) {
             handleError(socket, error, data);
         }
@@ -74,7 +133,6 @@ io.sockets.on('connect', (socket) => {
 
     socket.on('get-rooms', () => {
         try {
-            console.log(rooms);
             socket.emit('get-rooms', JSON.stringify(Array.from(rooms.keys())));
         } catch (error) {
             handleError(socket, error, data);
@@ -90,6 +148,24 @@ io.sockets.on('connect', (socket) => {
             handleError(socket, error, data);
         }
     });
+
+    socket.on('start-timer', async (data) => {
+        try {
+            const room = rooms.get(data.roomName);
+            if (parseInt(room.timer.currentSeconds, 10) < parseInt(room.timer.totalSeconds,10)) {
+                socket.emit('message-room', 'Wait until timer completes before restarting it.');
+                return;
+            }
+            if (parseInt(room.timer.currentSeconds,10) >= parseInt(room.timer.totalSeconds,10)) {
+                room.timer.currentSeconds = 0;
+                startTimer(room, socket);
+            }
+
+        } catch (error) {
+            handleError(socket, error, data);
+        }
+    });
+
 
     socket.on('get-text-messages', (data) => {
         try {
@@ -108,7 +184,6 @@ io.sockets.on('connect', (socket) => {
             const room = rooms.get(roomName);
             room.textMessages.push(message);
             socket.broadcast.to(roomName).emit(`new-text-message`);
-           
         } catch (error) {
             handleError(socket, error, data);
         }
@@ -120,7 +195,7 @@ io.sockets.on('connect', (socket) => {
             const message = data.message;
             console.log(`sending message to room  ${roomName} message ${message}`);
             const room = rooms.get(roomName);
-            if (room){
+            if (room) {
                 room.textMessages.push(`&#9733 ${message}`);
             }
             socket.to(roomName).emit('message-room', message);
@@ -173,5 +248,6 @@ function handleError(socket, error, data) {
         console.log(e);
     }
 }
+
 
 module.exports = io;

@@ -26,6 +26,8 @@ async function buildMenu() {
     createAndAppendDiv(html, 'default', false);
 }
 
+var bugle_tune = new Audio('/sounds/bugle_tune.mp3');
+
 function createAndAppendDiv(html, id, isFullScreen) {
     let div = document.getElementById(id);
     if (div){

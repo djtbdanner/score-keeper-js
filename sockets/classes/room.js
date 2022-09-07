@@ -1,8 +1,9 @@
 class Room {
-    constructor(name, scores, owner) {
-        this.name = name
+    constructor(name, scores, owner, timer) {
+        this.name = name;
         this.scores = scores;
-        this.owner = owner
+        this.owner = owner;
+        this.timer = timer;
         this.textMessages = [];
     }
 }
