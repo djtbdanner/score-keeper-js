@@ -32,32 +32,47 @@ async function buildInitialScreen() {
     destroyById(`initial-screen`);
     let html = ``;
     html += `<form id ="initial-screen">`;
+    html += `<h2>Score Keeper</h2>`;
     html += `<table cellpadding="0" cellspacing="0" width="100%" border="0">`;
+
     html += `<tr><td colspan="2" style = "text-align:center;">`;
-    html += `<p>Enter game, choose points per goal and add teams or players.</p>`;
+    html += `<p>Choose a name for the game, number of points per score (e.g. basketball would be 2) and, optionally, create a timer.</p>`;
     html += `</td></tr>`;
+
     html += `<tr><td style="text-align:right;width:30%;">`;
-    html += `Game: `;
+    html += `Name of the game: `;
     html += `</td><td>`;
     html += `<input type="text" maxlength="20" id="game-name" placeholder="GameName" onKeyUp="shouldShowSubmitButton()" autofocus />`;
     html += `</td></tr>`;
+
     html += `<tr><td style="text-align:right;">`;
-    html += `Points: `;
+    html += `Points per goal or score: `;
     html += `</td><td>`;
     html += `<input type="number" maxlength="3" id="goal-points" value = "1" min="1" max="100" />`;
     html += `</td></tr>`;
+
     html += `<tr><td style="text-align:right;">`;
-    html += `Timer: `;
+    html += `Set a game timer?: `;
     html += `</td><td>`;
-    html += `<input type="checkbox" id="timer-checkbox" onclick="showTimerSpan()"/><span style="visibility:hidden" id= "time"><input type="number" maxlength="3" disabled id="timer-minutes" value = "0" min="0" max="999" onChange="shouldShowSubmitButton()" />:<input type="number" disabled maxlength="2" id="timer-seconds" value = "0" min="0" max="60" onChange="shouldShowSubmitButton()" />minutes:seconds</span>`;
-    html += `</td></tr>`;  
+    html += `<input type="checkbox" id="timer-checkbox" onclick="showTimerSpan()"/>`;
+    html += `</td></tr>`; 
+
+    html += `<tr><td style="text-align:right;width:30%;">`;
+    html += `<span style="visibility:hidden" id= "time-label">Timer (minutes:seconds):</span>`;
+    html += `</td><td>`;
+    html += `<span style="visibility:hidden" id= "time-fields"><input type="number" maxlength="3" disabled id="timer-minutes" value = "0" min="0" max="999" onChange="shouldShowSubmitButton()" />:<input type="number" disabled maxlength="2" id="timer-seconds" value = "0" min="0" max="60" onChange="shouldShowSubmitButton()" /></span>`;
+    html += `</td></tr>`;
+
     html += `<tr><td colspan="2" style = "text-align:center;">`;
     html += `<span id = "game-msg-span">&nbsp</span>`;
     html += `</td></tr>`;
+
     html += `<tr><td colspan="2" style = "text-align:center;">`;
     html += `<br><input type="submit" id="add-player-button" disabled="true" value="Add Team or Player" formaction="javascript:setRoomAddPlayer();" />`;
     html += `</td></tr>`;
+
     html += roomsList;
+
     html += `</table>`;
     html+=`</form>`;
     createAndAppendDiv(html, 'default', false);
@@ -67,17 +82,20 @@ function showTimerSpan(){
     const check = document.getElementById(`timer-checkbox`);
     const minutesBox = document.getElementById(`timer-minutes`);
     const secondsBox = document.getElementById(`timer-seconds`);
-    const theSpan = document.getElementById(`time`)
+    const theSpan = document.getElementById(`time-label`)
+    const theSpanFields = document.getElementById(`time-fields`)
     if (check.checked){
         minutesBox.disabled = false;
         secondsBox.disabled = false;
-        theSpan.style.visibility='visible';
+        theSpan.style.visibility=`visible`;
+        theSpanFields.style.visibility=`visible`
     } else {
         minutesBox.value = 0;
         secondsBox.value = 0;
         minutesBox.disabled = true;
         secondsBox.disabled = true;
-        theSpan.style.visibility='hidden';
+        theSpan.style.visibility=`hidden`;
+        theSpanFields.style.visibility=`hidden`
     }
     shouldShowSubmitButton();
 }
@@ -181,23 +199,23 @@ function buildAddTeamForm(index) {
     let html = ``;
     // html += `<div id="addDiv${index}" class = "modal"><form>`;
     html += `<form id="addDiv${index}"> `;
-    html += `<table style = "position:absolute;left:0;top:0;" cellpadding="5" cellspacing="0" width="100%" border="0">`;
+    html += `<table style = "position:absolute;left:0;top:;" cellpadding="5" cellspacing="0" width="100%" border="0">`;
     html += `<tr><td style = "text-align:center;" colspan = "2">`;
-    html += `Add team # ${index + 1} for ${gameName}`
+    html += `<p>Add ${index + 1}<sup>${index===0?"st":index===1?"nd":index===2?"rd":"th"}</sup> player or team info for game: ${gameName}</p>`
     html += `</td></tr>`;
     html += `<tr><td style="text-align:right;width:30%;">`;
-    html += `Team Name:`;
+    html += `Team or player name:`;
     html += `</td><td>`;
-    html += `<input type="input" maxlength="12" id="in-teamName${index}" placeholder="Team${index + 1} Name" autofocus onKeyUp="checkTeamEntries(${index})"/>`;
+    html += `<input type="input" maxlength="12" id="in-teamName${index}" placeholder="${index + 1}${index===0?"st":index===1?"nd":index===2?"rd":"th"} Name" autofocus onKeyUp="checkTeamEntries(${index})"/>`;
     html += `</td></tr>`;
     html += `<tr><td style="text-align:right;width:30%;">`;
-    html += `Primary Color:`;
+    html += `Primary Color for team tile:`;
     html += `</td><td>`;
     const primaryRando = getRandomColor();
     html += `<input type="color" id="primary-color${index}" value="${primaryRando}" onChange="checkTeamEntries(${index})">`
   
     html += `<tr><td style="text-align:right;width:30%;">`;
-    html += `Secondary Color:`;
+    html += `Secondary Color for team tile:`;
     html += `</td><td>`;
     const secondaryRando = getRandomColor(primaryRando);
     html += `<input type="color" id="secondary-color${index}" value="${secondaryRando}" onChange="checkTeamEntries(${index})">`
