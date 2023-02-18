@@ -8,16 +8,22 @@
     "start": "node index.js",
     "go": "nodemon index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/djtbdanner/scorekeeper"
-  },
+  "keywords": [
+    "score",
+    "share",
+    "real-time",
+    "share"
+  ],
   "author": "Dave Danner",
-  "license": "none",
+  "license": "ISC",
   "dependencies": {
     "socket.io": "^4.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/djtbdanner/score-keeper-js/issues"
+  },
+  "homepage": "https://github.com/djtbdanner/score-keeper-js#readme"
 }
