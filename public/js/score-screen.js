@@ -78,11 +78,10 @@ function drawScreen(teamsList, includeListeners, roomName, hasTimer) {
         addListeners(hasTimer);
     }
 
-        // --TODO -- auto fullscreen back
-    // if (firstScreen) {
-    //     openFullScreen();
-    //     firstScreen = false;
-    // }
+    if (firstScreen) {
+        openFullScreen();
+        firstScreen = false;
+    }
 }
 
 function setFontDefaultSizes(teamsList) {
