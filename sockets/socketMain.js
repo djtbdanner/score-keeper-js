@@ -9,47 +9,57 @@ async function broadcastTimer(room, socket, includeMe) {
     const total = room.timer.totalSeconds;
     const current = room.timer.currentSeconds;
     let displaySeconds = room.timer.totalSeconds - room.timer.currentSeconds;
-
     const obj = {};
-    obj.display = secondsToDisplay(displaySeconds);
     obj.percentComplete = `${parseInt(current / total * 100, 10)}`;
+    if (obj.percentComplete>=100){
+        displaySeconds = 0;
+    }
+    obj.display = secondsToDisplay(displaySeconds)+` `;
+
     // everyone else
     socket.broadcast.to(room.name).emit(`timer-change`, obj);
 
-    if (includeMe){
-        if (room.timer.totalSeconds <= room.timer.currentSeconds){
-            obj.display = secondsToDisplay(room.timer.totalSeconds) + `\u25BA` ;
+    if (includeMe) {
+        if (room.timer.totalSeconds <= room.timer.currentSeconds) {
+            obj.display = secondsToDisplay(room.timer.totalSeconds) + `\u25BA`;
         }
         // owner
         socket.emit(`timer-change`, obj);
     }
 }
 
-function secondsToDisplay(displaySeconds){
+function secondsToDisplay(displaySeconds) {
     let minutes = 0;
     let seconds = displaySeconds;
-    if(displaySeconds > 60){
-        minutes = Math.floor(displaySeconds/60);
-        seconds = displaySeconds%60;
+    if (displaySeconds > 60) {
+        minutes = Math.floor(displaySeconds / 60);
+        seconds = displaySeconds % 60;
     }
-    minutes = String(minutes).padStart(2,`0`);
-    seconds = String(seconds).padStart(2,`0`);
+    minutes = String(minutes).padStart(2, `0`);
+    seconds = String(seconds).padStart(2, `0`);
     return `${minutes}:${seconds} `;
 }
 
-async function startTimer(room, socket) {
-    if (!room || !room.timer) {
-        throw Error(`No room or no timer in room to process timer functionality`);
+async function processTimer(room, socket) {
+    try {
+        if (!room) {
+            throw Error(`No room in room to process timer functionality`);
+        }
+        while (room.timer && room.timer.currentSeconds <= room.timer.totalSeconds) {
+            broadcastTimer(room, socket, true);
+            room.timer.currentSeconds = room.timer.currentSeconds + 1;
+            await delay(1000);
+        }
+
+        if (room.timer)
+            room.timer.currentSeconds = room.timer.totalSeconds;
+
+        // everyone else
+        socket.broadcast.to(room.name).emit(`play-sound`);
+        socket.emit(`play-sound`);
+    } catch (error) {
+        handleError(undefined, error, undefined);
     }
-    while (room.timer.currentSeconds <= room.timer.totalSeconds) {
-        broadcastTimer(room, socket, true);
-        room.timer.currentSeconds = room.timer.currentSeconds + 1;
-        await delay(1000);
-    }
-    room.timer.currentSeconds = room.timer.totalSeconds;
-    // everyone else
-    socket.broadcast.to(room.name).emit(`play-sound`);
-    socket.emit(`play-sound`);
 }
 
 function delay(time) {
@@ -74,12 +84,13 @@ io.sockets.on('connect', (socket) => {
             const scores = data.scores;
             const isOwner = data.isOwner;
             let room = rooms.get(roomName);
-            const timeSettings = data.timeSettings;
+            const totalSeconds = data.totalSeconds;
+            // score change is called when first firing up client and if there is no room yet create one
             if (!room) {
                 room = new Room(roomName);
                 socket.broadcast.emit('room-change');
-                if (timeSettings.seconds){
-                    const seconds = parseInt(timeSettings.seconds, 10);
+                if (totalSeconds){
+                    const seconds = parseInt(totalSeconds, 10);
                     const timer = new Timer(seconds, seconds, true);
                     room.timer = timer;
                     broadcastTimer(room, socket, true); 
@@ -92,10 +103,10 @@ io.sockets.on('connect', (socket) => {
             }
             rooms.set(roomName, room);
             const hasTimer = !!room.timer
-            socket.broadcast.to(roomName).emit(`score-change`, { scores, roomName, hasTimer});
-            if (room.timer){
+            socket.broadcast.to(roomName).emit(`score-change`, { scores, roomName, hasTimer });
+            if (room.timer) {
                 // --todo-- can we just send this with the score???
-                broadcastTimer(room, socket, false); 
+                broadcastTimer(room, socket, false);
             }
         } catch (error) {
             handleError(socket, error, data);
@@ -110,7 +121,7 @@ io.sockets.on('connect', (socket) => {
             }
             socket.join(data);
             const hasTimer = !!room.timer
-            socket.emit(`join-room-by-name`, {scores: room.scores, hasTimer});
+            socket.emit(`join-room-by-name`, { scores: room.scores, hasTimer });
         } catch (error) {
             handleError(socket, error, data);
         }
@@ -137,13 +148,13 @@ io.sockets.on('connect', (socket) => {
     socket.on('start-timer', async (data) => {
         try {
             const room = rooms.get(data.roomName);
-            if (parseInt(room.timer.currentSeconds, 10) < parseInt(room.timer.totalSeconds,10)) {
+            if (parseInt(room.timer.currentSeconds, 10) < parseInt(room.timer.totalSeconds, 10)) {
                 socket.emit('message-room', 'Wait until timer completes before restarting it.');
                 return;
             }
-            if (parseInt(room.timer.currentSeconds,10) >= parseInt(room.timer.totalSeconds,10)) {
+            if (parseInt(room.timer.currentSeconds, 10) >= parseInt(room.timer.totalSeconds, 10)) {
                 room.timer.currentSeconds = 0;
-                startTimer(room, socket);
+                processTimer(room, socket);
             }
 
         } catch (error) {
@@ -155,8 +166,27 @@ io.sockets.on('connect', (socket) => {
     socket.on('get-text-messages', (data) => {
         try {
             const room = rooms.get(data);
-            console.log(`getting messages`);
             socket.emit('get-text-messages', room.textMessages);
+        } catch (error) {
+            handleError(socket, error, data);
+        }
+    });
+
+    socket.on('timer-update', (data) => {
+        try {
+            console.log(data);
+            const room = rooms.get(data.roomName);
+            const useTimer = data.useTimer;
+            const totalSeconds = data.totalSeconds;
+            if (useTimer) {
+                timer = {};
+                timer.totalSeconds = totalSeconds;
+                timer.currentSeconds = totalSeconds;
+                room.timer = timer;
+            } else {
+                room.timer = undefined;
+            }
+            processTimer(room, socket);
         } catch (error) {
             handleError(socket, error, data);
         }

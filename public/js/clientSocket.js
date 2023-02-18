@@ -6,8 +6,8 @@ socket.on('score-change', (data) => {
     drawScreen(scoreData, false, data.roomName, hasTimer);
 });
 
-function scoreChange(room, scores, isOwner, timeSettings) {
-    socket.emit(`score-change`, { room, scores, isOwner: isOwner, timeSettings });
+function scoreChange(room, scores, isOwner, totalSeconds) {
+    socket.emit(`score-change`, { room, scores, isOwner, totalSeconds });
 }
 
 socket.on('room-change', () => {
@@ -70,6 +70,11 @@ function startTimer(roomName) {
     socket.emit(`start-timer`, { roomName });
 }
 
+function timerChange(roomName, useTimer, totalSeconds) {
+    socket.emit(`timer-update`, { roomName, useTimer, totalSeconds });
+}
+
+
 socket.on('play-sound', (data) => {
     bugle_tune.play();
 });
@@ -96,5 +101,4 @@ function reconnect() {
 function handleError(e) {
     alert("There was an unexpected error in processing.");
     console.log(e);
-    console.log(e.stack)
 }

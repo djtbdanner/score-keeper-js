@@ -12,8 +12,13 @@ async function buildMenu() {
     if (ROOM_OWNER) {
         html += `<a class ="menuItem" onClick="resetScore()">Reset Score</a></br>`;
         html += `<hr>`;
-        html += `<a class ="menuItem" onClick="addTimer()">Add Timer</a></br>`;
-        html += `<hr>`;
+        if (!USE_TIMER){
+            html += `<a class ="menuItem" onClick="updateTimer()">Add Timer</a></br>`;
+            html += `<hr>`;
+        } else {
+            html += `<a class ="menuItem" onClick="updateTimer()">Update Timer</a></br>`;
+            html += `<hr>`;           
+        }
     }
     if (!document.fullscreenElement) {
         html += `<a class ="menuItem" onClick="openFullScreen();">FullScreen</a></br>`;
@@ -54,7 +59,7 @@ function createAndAppendDiv(html, id, isFullScreen) {
     document.body.appendChild(div);
 }
 
-function clearAllDivs() {
+function clearHtmlBody() {
     document.body.innerHTML = "";
 }
 
@@ -179,6 +184,59 @@ function sendMessage() {
     document.getElementById(`txt-message-to-send`).focus();
 }
 
+
+function updateTimer() {
+    destroyById('add-timer');
+    let html = ``;
+    html += `<form><div id="add-timer" class="modal" style="background-color: rgba(139, 139, 139, 0.9);text-align:center;">`;
+    html += `<br>`;
+    html += `<br>`;
+    html += `<input type="number" maxlength="3" id="timer-minutes" value = "0" min="0" max="999" onChange="checkTimerAddButton()"/>:`;
+    html += `<input type="number" maxlength="2" id="timer-seconds" value = "0" min="0" max="60" onChange="checkTimerAddButton()"/>`;
+    html += `<br>`;
+    html += `minutes:seconds`;
+    html += `<br>`;  
+    buttonName = USE_TIMER?`Update Timer`:`Add Timer`;
+    html += `<input type="button" value="Cancel" id="cancel-timer-button" onClick="javascript:destroyById('add-timer')"/>`;
+    html += `<input type="submit" value="${buttonName}" disabled="true" id="add-timer-button" formaction="javascript:addTimerButtonClick()"/>`;
+    if (USE_TIMER){
+        html += `<input type="button" value="Remove Timer" id="remove-timer-button" onClick="javascript:removeTimerButtonClick()"/>`;
+    }
+    html += `</div></form>`;
+    createAndAppendDiv(html, 'default', false);
+    document.getElementById(`timer-minutes`).focus();
+}
+
+function checkTimerAddButton(){
+    document.getElementById(`add-timer-button`).disabled = true;
+    if (document.getElementById(`timer-minutes`).value  &&  document.getElementById(`timer-seconds`).value){
+        if (parseInt(document.getElementById(`timer-minutes`).value, 10) > 0 || parseInt(document.getElementById(`timer-seconds`).value, 10) > 0 ){
+            document.getElementById(`add-timer-button`).disabled = false;
+        }
+    }
+}
+
+function addTimerButtonClick(){
+    USE_TIMER = true;
+    const minutes = document.getElementById(`timer-minutes`).value;
+    const seconds = document.getElementById(`timer-seconds`).value
+    TOTAL_SECONDS= parseInt(minutes, 10) * 60 + parseInt(seconds, 10);
+    localStorage.setItem('use-timer', USE_TIMER);
+    localStorage.setItem('total-seconds', TOTAL_SECONDS);
+    timerChange(ROOM_NAME, true, TOTAL_SECONDS);
+    rebuildGameFromLocalStorage();
+}
+
+function removeTimerButtonClick(){
+    USE_TIMER = false;
+    TOTAL_SECONDS = 0;
+    localStorage.setItem('use-timer', USE_TIMER);
+    localStorage.setItem('total-seconds', TOTAL_SECONDS);
+    timerChange(ROOM_NAME, false, TOTAL_SECONDS);
+    rebuildGameFromLocalStorage();
+}
+
+
 function checkDisabled() {
     const textMessage = document.getElementById(`txt-message-to-send`).value;
     const button = document.getElementById(`send-text-button`);
@@ -193,4 +251,16 @@ function send() {
     const message = document.getElementById(`txt-message-to-send`).value;
     sendTextMessage(ROOM_NAME, message);
     destroyById('text-message-in');
+}
+
+function secondsToDisplay(displaySeconds) {
+    let minutes = 0;
+    let seconds = displaySeconds;
+    if (displaySeconds > 60) {
+        minutes = Math.floor(displaySeconds / 60);
+        seconds = displaySeconds % 60;
+    }
+    minutes = String(minutes).padStart(2, `0`);
+    seconds = String(seconds).padStart(2, `0`);
+    return `${minutes}:${seconds} `;
 }

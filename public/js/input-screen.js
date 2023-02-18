@@ -103,20 +103,18 @@ function rebuildGameFromLocalStorage() {
     ROOM_OWNER = true;
     POINTS_PER_TAP = localStorage.getItem(`points-per-tap`) || 1;
 
-    USE_TIMER = localStorage.getItem('use-timer');
+    USE_TIMER = localStorage.getItem('use-timer')===`true`;
     TOTAL_SECONDS = localStorage.getItem('total-seconds');
     const scores = JSON.parse(storedScores);
     sendRoomMessage(ROOM_NAME, `Score keeper reconnected to ${ROOM_NAME}.`);
 
-    const timeSettings = {};
     let hasTimer = false;
     if (USE_TIMER){
-        timeSettings.seconds = TOTAL_SECONDS;
         hasTimer = true;
     }
 
-    scoreChange(ROOM_NAME, scores, true, timeSettings);
-    drawScreen(scores, true, ROOM_NAME, USE_TIMER);
+    scoreChange(ROOM_NAME, scores, true, TOTAL_SECONDS);
+    drawScreen(scores, true, ROOM_NAME, hasTimer);
 }
 
 function setRoomAddPlayer() {
@@ -156,6 +154,8 @@ function buildRoomList(availableRooms) {
 function setRoomAddJoin(roomName) {
     destroyById('initial-screen');
     ROOM_NAME = roomName;
+    ROOM_OWNER = false;
+    localStorage.clear();
     const storedRoomName = localStorage.getItem('room-name');
     const storedScores = localStorage.getItem('scores');
     if (roomName === storedRoomName && storedScores) {
@@ -314,14 +314,11 @@ function buildAndSendScore() {
         scores.push(theScore);
 
     }
-    const timeSettings = {};
     let hasTimer = false;
     if (USE_TIMER){
-        timeSettings.seconds = TOTAL_SECONDS;
         hasTimer = true;
     }
-    scoreChange(ROOM_NAME, scores, true, timeSettings);
-    clearAllDivs();
+    scoreChange(ROOM_NAME, scores, true, TOTAL_SECONDS);
     drawScreen(scores, true, ROOM_NAME, hasTimer);
     const pointsPer = POINTS_PER_TAP;
     if (pointsPer && parseInt(pointsPer, 10) > 1) {

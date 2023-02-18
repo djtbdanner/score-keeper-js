@@ -1,6 +1,6 @@
 let firstScreen = true;
 function drawScreen(teamsList, includeListeners, roomName, hasTimer) {
-    destroyById(`score-div`);
+    clearHtmlBody();
     setFontDefaultSizes(teamsList);
     let teamCount = teamsList.length;
     const menuHeight = getMenuHeightPercent(hasTimer);//--todo--fortimer
@@ -53,7 +53,11 @@ function drawScreen(teamsList, includeListeners, roomName, hasTimer) {
     let scorepage = ``;
     scorepage += `<div class="menuDiv" id="score-div"><img src="images/menu_icon.png" class="menuimg" alt="menu" onClick="buildMenu()">${roomName}</div>`;
     if (hasTimer) {
-        scorepage += `<div class="timerDiv" id="timer-disp-div"></div>
+        let seconds = secondsToDisplay(TOTAL_SECONDS);
+        if (ROOM_OWNER){
+            seconds += `\u25BA`;
+        }
+        scorepage += `<div class="timerDiv" id="timer-disp-div">${seconds}</div>
                   <div class="progressDiv" id="timer-progress-div">
                     <div class="timerPercentDiv" id="timer-percent"></div>
                   </div>`;
@@ -289,7 +293,6 @@ function dragStartProcessor(event) {
     let { yLoc, xLoc } = getXy(event);
     eventx = xLoc;
     eventy = yLoc;
-    console.log(eventy + ":y-start " + eventx + ":x-start ");
 }
 
 function dragEndProcessor(event) {
