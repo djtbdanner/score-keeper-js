@@ -7,7 +7,7 @@ socket.on('score-change', (data) => {
 });
 
 function scoreChange(room, scores, isOwner, timeSettings) {
-    socket.emit(`score-change`, { room, scores, isOwner:isOwner, timeSettings });
+    socket.emit(`score-change`, { room, scores, isOwner: isOwner, timeSettings });
 }
 
 socket.on('room-change', () => {
@@ -24,7 +24,7 @@ function sendRoomMessage(roomName, message) {
 
 async function getAvailableRooms() {
     const result = await asyncEmit('get-rooms');
-    return  JSON.parse(result);
+    return JSON.parse(result);
 }
 
 socket.on(`backendError`, (data) => {
@@ -32,16 +32,20 @@ socket.on(`backendError`, (data) => {
 });
 
 async function joinRoom(roomName) {
-    const result = await asyncEmit(`join-room-by-name`, roomName);
-    const scores = result.scores;
-    const hasTimer = result.hasTimer;
-    drawScreen(scores, false, roomName, hasTimer);
+    try {
+        const result = await asyncEmit(`join-room-by-name`, roomName);
+        const scores = result.scores;
+        const hasTimer = result.hasTimer;
+        drawScreen(scores, false, roomName, hasTimer);
+    }
+    catch (e) {
+        handleError(e);
+    }
 }
 
 async function isRoomAvailable(room) {
     const result = await asyncEmit('is-room-available', room);
     const isAvailable = result.isAvailable;
-    // console.log('result ' + JSON.stringify(isAvailable));
     return isAvailable;
 }
 
@@ -55,16 +59,15 @@ socket.on('timer-change', (data) => {
 
 async function getMessages(room) {
     const result = await asyncEmit('get-text-messages', room);
-    // console.log(`messages ${result}`);
     return result;
 }
 
-function sendTextMessage(roomName, message){
+function sendTextMessage(roomName, message) {
     socket.emit(`message-text`, { roomName, message });
 }
 
-function startTimer(roomName){
-    socket.emit(`start-timer`, {roomName});
+function startTimer(roomName) {
+    socket.emit(`start-timer`, { roomName });
 }
 
 socket.on('play-sound', (data) => {
@@ -81,11 +84,17 @@ function asyncEmit(eventName, data) {
         setTimeout(reject, 1000);
     });
 }
- 
+
 function disconnect() {
     socket.disconnect();
 }
 
 function reconnect() {
     socket.connect();
+}
+
+function handleError(e) {
+    alert("There was an unexpected error in processing.");
+    console.log(e);
+    console.log(e.stack)
 }

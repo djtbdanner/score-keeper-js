@@ -2,13 +2,13 @@ async function buildEntryScreens() {
 
     const storedScores = localStorage.getItem('scores');
     const date = localStorage.getItem('scores-date');
-    const roomName = localStorage.getItem('room-name');
-    const isOwner = localStorage.getItem(`is-owner`);
-    if (storedScores && date && roomName) {
+    ROOM_NAME = localStorage.getItem('room-name');
+    ROOM_OWNER = localStorage.getItem(`is-owner`);
+    if (storedScores && date && ROOM_NAME) {
         const dateToCompare = new Date(date);
         if (isToday(dateToCompare)) {
-            const msg = `You were keeping score for <i><b>${roomName}</b></i> earlier today</br> Would you like to continue with that game?`;
-            modalConfirm(msg, `rebuildGameFromLocalStorage()`, `buildInitialScreen()`, `Continue ${roomName}`, `New Game`);
+            const msg = `You were keeping score for <i><b>${ROOM_NAME}</b></i> earlier today</br> Would you like to continue with that game?`;
+            modalConfirm(msg, `rebuildGameFromLocalStorage()`, `buildInitialScreen()`, `Continue ${ROOM_NAME}`, `New Game`);
             return;
         }
     }
@@ -31,7 +31,6 @@ async function buildInitialScreen() {
     }
     destroyById(`initial-screen`);
     let html = ``;
-    // html += `<form><div id="initial-screen" class="modal">`;
     html += `<form id ="initial-screen">`;
     html += `<table cellpadding="0" cellspacing="0" width="100%" border="0">`;
     html += `<tr><td colspan="2" style = "text-align:center;">`;
@@ -100,38 +99,35 @@ function rebuildGameFromLocalStorage() {
 
     const storedScores = localStorage.getItem('scores');
     const date = localStorage.getItem('scores-date');
-    const roomName = localStorage.getItem('room-name');
-    document.getElementById(`room-name`).value = roomName;
-    document.getElementById(`room-owner`).value = "true";
-    document.getElementById(`points-per-tap`).value = localStorage.getItem(`points-per-tap`) || 1;
+    ROOM_NAME = localStorage.getItem('room-name');
+    ROOM_OWNER = true;
+    POINTS_PER_TAP = localStorage.getItem(`points-per-tap`) || 1;
 
-    document.getElementById(`use-timer`).value = localStorage.getItem('use-timer');
-    totalSeconds = document.getElementById(`total-seconds`).value = localStorage.getItem('total-seconds');
-
+    USE_TIMER = localStorage.getItem('use-timer');
+    TOTAL_SECONDS = localStorage.getItem('total-seconds');
     const scores = JSON.parse(storedScores);
-    sendRoomMessage(roomName, `Score keeper reconnected to ${roomName}.`);
+    sendRoomMessage(ROOM_NAME, `Score keeper reconnected to ${ROOM_NAME}.`);
 
     const timeSettings = {};
     let hasTimer = false;
-    if (document.getElementById(`use-timer`).value === `true`){
-        timeSettings.seconds = document.getElementById(`total-seconds`).value;
+    if (USE_TIMER){
+        timeSettings.seconds = TOTAL_SECONDS;
         hasTimer = true;
     }
 
-    scoreChange(roomName, scores, true, timeSettings);
-    drawScreen(scores, true, roomName, hasTimer);
+    scoreChange(ROOM_NAME, scores, true, timeSettings);
+    drawScreen(scores, true, ROOM_NAME, USE_TIMER);
 }
 
 function setRoomAddPlayer() {
     // set the global html values (user options)
-    document.getElementById(`room-name`).value = document.getElementById(`game-name`).value;
-    document.getElementById(`points-per-tap`).value = document.getElementById(`goal-points`).value;
-
-    document.getElementById(`use-timer`).value = document.getElementById(`timer-checkbox`).checked;
+    ROOM_NAME = document.getElementById(`game-name`).value;
+    POINTS_PER_TAP = document.getElementById(`goal-points`).value;
+    ROOM_OWNER = true;
+    USE_TIMER = document.getElementById(`timer-checkbox`).checked;
     const minutes = document.getElementById(`timer-minutes`).value;
     const seconds = document.getElementById(`timer-seconds`).value
-    const totalSeconds = parseInt(minutes, 10) * 60 + parseInt(seconds, 10);
-    document.getElementById(`total-seconds`).value = totalSeconds;
+    TOTAL_SECONDS= parseInt(minutes, 10) * 60 + parseInt(seconds, 10);
 
     destroyById('initial-screen');
     addPlayerOrTeam(0);
@@ -159,7 +155,7 @@ function buildRoomList(availableRooms) {
 
 function setRoomAddJoin(roomName) {
     destroyById('initial-screen');
-    document.getElementById(`room-name`).value = roomName;
+    ROOM_NAME = roomName;
     const storedRoomName = localStorage.getItem('room-name');
     const storedScores = localStorage.getItem('scores');
     if (roomName === storedRoomName && storedScores) {
@@ -181,8 +177,7 @@ function addPlayerOrTeam(index) {
 }
 
 function buildAddTeamForm(index) {
-
-    const gameName = document.getElementById(`room-name`).value;
+    const gameName = ROOM_NAME;
     let html = ``;
     // html += `<div id="addDiv${index}" class = "modal"><form>`;
     html += `<form id="addDiv${index}"> `;
@@ -274,7 +269,6 @@ function addTeam(index) {
         fontSize = `3vh`;
     }
     const div = document.createElement(`div`);
-    // couldnt' get the style to set
     div.innerHTML = html;
     document.body.appendChild(div);
     div.classList.add(`exampleDiv`);
@@ -320,17 +314,16 @@ function buildAndSendScore() {
         scores.push(theScore);
 
     }
-    const roomName = document.getElementById(`room-name`).value;
     const timeSettings = {};
     let hasTimer = false;
-    if (document.getElementById(`use-timer`).value === 'true'){
-        timeSettings.seconds = document.getElementById(`total-seconds`).value;
+    if (USE_TIMER){
+        timeSettings.seconds = TOTAL_SECONDS;
         hasTimer = true;
     }
-    scoreChange(roomName, scores, true, timeSettings);
+    scoreChange(ROOM_NAME, scores, true, timeSettings);
     clearAllDivs();
-    drawScreen(scores, true, roomName, hasTimer);
-    const pointsPer = document.getElementById(`points-per-tap`).value;
+    drawScreen(scores, true, ROOM_NAME, hasTimer);
+    const pointsPer = POINTS_PER_TAP;
     if (pointsPer && parseInt(pointsPer, 10) > 1) {
         modalMessage(`Each click on the score will add ${pointsPer} points, clicking at bottom of score will subtract ${pointsPer} points. If you need to add or remove a single point, slide up on the score to add, slide down to remove.`);
     }
@@ -343,7 +336,6 @@ async function shouldShowSubmitButton() {
     gameMessageSpan.innerHTML = `&nbsp;`;
     if (gameName && gameName.length > 0 && isTimerSetOrNotChosen()) {
         const available = await isRoomAvailable(gameName);
-        // console.log(`is available ${available}`);
         if (available) {
             addPlayerButton.disabled = false;
         } else {

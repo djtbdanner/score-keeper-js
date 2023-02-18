@@ -61,26 +61,11 @@ io.sockets.on('connect', (socket) => {
     console.log("initial connection ");
     //// TODO -- don't do this mmm - K
     // let room = new Room(`8`);
-    //  room.scores = `[{"teamName":"Dave","score":"880","color":"#ff0000","textColor":"#888888"},{"teamName":"Snakes","score":"100","color":"#00ff00","textColor":"#123456"},{"teamName":"Hawks","score":"0","color":"#0000ff","textColor":"#ffff00"},{"teamName":"Tired","score":"0","color":"#ff00ff","textColor":"#00ff00"},{"teamName":"Happy","score":"0","color":"#ffffff","textColor":"#000000"},{"teamName":"Tater","score":"0","color":"#ff5555","textColor":"#882288"},{"teamName":"Foofs","score":"0","color":"#ff0000","textColor":"#000000"},{"teamName":"Team","score":"0","color":"#777777","textColor":"#110022"}]`;
-    //  rooms.set('8', room);
+    // room.scores = JSON.parse(`[{"teamName":"Dave","score":"99","color":"rgb(255, 140, 0)","textColor":"rgb(0, 140, 0)"},{"teamName":"Don","score":"10","color":"rgb(255, 140, 0)","textColor":"rgb(255, 200, 0)"},{"teamName":"Jill","score":"10","color":"rgb(255, 140, 0)","textColor":"rgb(255, 200, 0)"},{"teamName":"Frank","score":"10","color":"rgb(255, 140, 0)","textColor":"rgb(80, 200, 0)"},{"teamName":"Trevor","score":"10","color":"rgb(255, 140, 0)","textColor":"rgb(255, 200, 0)"},{"teamName":"Bailey","score":"10","color":"rgb(255, 100, 0)","textColor":"rgb(23, 200, 0)"},{"teamName":"Sophie","score":"10","color":"rgb(255, 140, 0)","textColor":"rgb(255, 200, 0)"},{"teamName":"Godzilla","score":"10","color":"rgb(25, 140, 0)","textColor":"rgb(10, 10, 10)"}]`);
+    // rooms.set('8', room);
     // room = new Room(`2`);
-    // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"}]`;
+    // room.scores = JSON.parse(`[{"teamName":"Dave","score":"99","color":"rgb(255, 140, 0)","textColor":"rgb(0, 140, 0)"},{"teamName":"Don","score":"10","color":"rgb(255, 140, 0)","textColor":"rgb(255, 200, 0)"}]`);
     // rooms.set('2', room);
-    // room = new Room(`3`);
-    // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"}]`;
-    // rooms.set('3', room);
-    // room = new Room(`4`);
-    // room.scores = `[{"teamName":"Dave","score":"987878","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Don","score":"920","color":"green","textColor":"red"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"}]`;
-    // rooms.set('4', room);
-    // room = new Room(`5`);
-    // room.scores = `[{"teamName":"Dave","score":"123456","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Don","score":"920","color":"green","textColor":"red"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"}]`;
-    // rooms.set('5', room);
-    // room = new Room(`6`);
-    // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Don","score":"920","color":"green","textColor":"red"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"}]`;
-    // rooms.set('6', room);
-    // room = new Room(`7`);
-    // room.scores = `[{"teamName":"Dave","score":"99","color":"#ff0000","textColor":"#888888"},{"teamName":"Don","score":"10","color":"#ff00ff","textColor":"#000000"},{"teamName":"Don","score":"920","color":"green","textColor":"red"},{"teamName":"Elephant","score":"100","color":"red","textColor":"green"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"},    {"teamName":"Dave","score":"999","color":"#ff0000","textColor":"#888888"}]`;
-    // rooms.set('7', room);
     //// this just a test
 
     socket.on('score-change', (data) => {

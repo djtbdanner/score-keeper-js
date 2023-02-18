@@ -74,10 +74,11 @@ function drawScreen(teamsList, includeListeners, roomName, hasTimer) {
         addListeners(hasTimer);
     }
 
-    if (firstScreen) {
-        openFullScreen();
-        firstScreen = false;
-    }
+        // --TODO -- auto fullscreen back
+    // if (firstScreen) {
+    //     openFullScreen();
+    //     firstScreen = false;
+    // }
 }
 
 function setFontDefaultSizes(teamsList) {
@@ -252,7 +253,7 @@ function addListeners(hasTimer) {
             const { top, bottom } = getOffset(thisDiv);
             const middle = top + .80 * (bottom - top);
             let adder = 1;
-            const alt = document.getElementById(`points-per-tap`).value;
+            const alt = POINTS_PER_TAP;
             if (!isNaN(alt)) {
                 adder = parseInt(alt, 10);
             }
@@ -273,9 +274,6 @@ function addListeners(hasTimer) {
         timerDisplayDiv.addEventListener('click', (event) => {
             clickedTimer(event);
         });
-        // timerProgressDiv.addEventListener('click', (event) => {
-        //     clickedTimer(event);
-        // });
         timerPercentDiv.addEventListener('click', (event) => {
             clickedTimer(event);
         });
@@ -284,15 +282,13 @@ function addListeners(hasTimer) {
 }
 
 function clickedTimer(event) {
-    const roomName = document.getElementById(`room-name`).value;
-    startTimer(roomName);
+    startTimer(ROOM_NAME);
 }
 
 function dragStartProcessor(event) {
     let { yLoc, xLoc } = getXy(event);
     eventx = xLoc;
     eventy = yLoc;
-    // console.log(`drag start y- ${eventy} x-${eventx}`)
     console.log(eventy + ":y-start " + eventx + ":x-start ");
 }
 
@@ -302,7 +298,6 @@ function dragEndProcessor(event) {
         return;
     }
     let { yLoc, xLoc } = getXy(event);
-    // console.log(yLoc + ":y-end " + xLoc + ":x-end ");
     let destination = document.elementFromPoint(xLoc, yLoc);
     if (!isDivOrScore(destination)) {
         return;
@@ -311,13 +306,10 @@ function dragEndProcessor(event) {
     let sourceDivNum = getIdSuffix(sourceDiv);
 
     let screenChange = false;
-    // console.log(yLoc + ":y-end " + xLoc + ":x-end " + eventy + ":y-start " + eventx + "x-start");
     if (destinationDivNum !== sourceDivNum) {
-        // console.log(`swap divs`);
         swapDivs(destination, sourceDiv);
         screenChange = true;
     } else {
-        // console.log(`Move ${eventy} ${yLoc} ${destination.id} `);
         if (Math.abs(parseInt(eventy, 10) - parseInt(yLoc, 10)) > 30) {
             let adder = 1;
             if (parseInt(eventy, 10) < parseInt(yLoc, 10)) {
@@ -338,9 +330,7 @@ function dragEndProcessor(event) {
 function getXy(event) {
     let xLoc = event.pageX;
     let yLoc = event.pageY;
-    // console.log(yLoc + ":y-end " + xLoc + ":x-end ");
     let userAgent = navigator.userAgent;
-    // console.log(event);
     if (userAgent) {
         // I understand this is a bug in firefox
         if (userAgent.includes("Firefox") && userAgent.includes("Windows")) {
@@ -459,25 +449,18 @@ function buildSendScoreFromScreen() {
             scores.push(theScore);
         }
     }
-    const roomName = document.getElementById(`room-name`).value;
-    const isOwner = document.getElementById(`room-owner`).value.toLowerCase() === `true`;
-    const pointsPerTap = document.getElementById(`points-per-tap`).value;
-    const userTimer = document.getElementById(`use-timer`).value;
-    const totalSeconds = document.getElementById(`total-seconds`).value;
-
-
     // save scores locally so browser can be closed and opened on the scores
-    if (isOwner) {
+    if (ROOM_OWNER) {
         localStorage.setItem('scores', JSON.stringify(scores));
         localStorage.setItem('scores-date', new Date());
-        localStorage.setItem('room-name', roomName);
-        localStorage.setItem('is-owner', isOwner);
-        localStorage.setItem('points-per-tap', pointsPerTap);
+        localStorage.setItem('room-name', ROOM_NAME);
+        localStorage.setItem('is-owner', ROOM_OWNER);
+        localStorage.setItem('points-per-tap', POINTS_PER_TAP);
 
-        localStorage.setItem('use-timer', userTimer);
-        localStorage.setItem('total-seconds', totalSeconds);
+        localStorage.setItem('use-timer', USE_TIMER);
+        localStorage.setItem('total-seconds', TOTAL_SECONDS);
     }
-    scoreChange(roomName, scores, isOwner);
+    scoreChange(ROOM_NAME, scores, ROOM_OWNER);
     setFontDefaultSizes(scores);
 }
 

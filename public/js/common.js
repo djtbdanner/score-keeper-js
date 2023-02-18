@@ -1,10 +1,18 @@
+let ROOM_NAME = "";
+let ROOM_OWNER = false;
+let POINTS_PER_TAP = 1;
+let USE_TIMER = false;
+let TOTAL_SECONDS = 0;
+
+
 async function buildMenu() {
-    const isOwner = document.getElementById(`room-owner`).value === "true";
     destroyById(`menu`);
     let html = ``;
     html += `<div id="menu" class="menu" onClick="destroyById('menu')">`;
-    if (isOwner) {
+    if (ROOM_OWNER) {
         html += `<a class ="menuItem" onClick="resetScore()">Reset Score</a></br>`;
+        html += `<hr>`;
+        html += `<a class ="menuItem" onClick="addTimer()">Add Timer</a></br>`;
         html += `<hr>`;
     }
     if (!document.fullscreenElement) {
@@ -47,15 +55,7 @@ function createAndAppendDiv(html, id, isFullScreen) {
 }
 
 function clearAllDivs() {
-    let divs = document.body.getElementsByTagName(`div`);
-    for(i=0; i<divs.length;i++){
-        destroyNode(divs[i]);
-    }
-
-    divs = document.getElementsByTagName(`div`);
-    for(i=0; i<divs.length;i++){
-        destroyNode(divs[i]);
-    }
+    document.body.innerHTML = "";
 }
 
 function destroyNode(node) {
@@ -150,8 +150,7 @@ async function modalMessage(message) {
 
 async function textMessages() {
     destroyById('text-message');
-    const roomName = document.getElementById(`room-name`).value;
-    let messages = await getMessages(roomName);
+    let messages = await getMessages(ROOM_NAME);
     if (!messages || messages.length < 1) {
         messages = [`no messages`];
     }
@@ -168,7 +167,6 @@ async function textMessages() {
 }
 
 function sendMessage() {
-    const roomName = document.getElementById(`room-name`).value;
     destroyById('text-message-in');
     let html = ``;
     html += `<form><div id="text-message-in" class="txt" style="background-color: rgba(139, 139, 139, 0.9);text-align:center;">`;
@@ -192,8 +190,7 @@ function checkDisabled() {
 }
 
 function send() {
-    const roomName = document.getElementById(`room-name`).value;
     const message = document.getElementById(`txt-message-to-send`).value;
-    sendTextMessage(roomName, message);
+    sendTextMessage(ROOM_NAME, message);
     destroyById('text-message-in');
 }
