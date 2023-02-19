@@ -17,7 +17,7 @@ Score Keeper JS is a Node application that allows users to keep track of scores 
 A couple screenshots from the same game on 2 different browsers
 
 ![Desktop screenshot](/screenshots/desktop.png "Desktop")
-![Phone screenshot](/screenshots/phone.png.png "Phone")
+![Phone screenshot](/screenshots/phone.png "Phone")
 
 ## Dependencies
 
