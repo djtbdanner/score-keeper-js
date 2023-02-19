@@ -194,6 +194,7 @@ function addPlayerOrTeam(index) {
     doneButton.disabled = enableDone;
 }
 
+usedColors = [];
 function buildAddTeamForm(index) {
     const gameName = ROOM_NAME;
     let html = ``;
@@ -211,13 +212,15 @@ function buildAddTeamForm(index) {
     html += `<tr><td style="text-align:right;width:30%;">`;
     html += `Primary Color for team tile:`;
     html += `</td><td>`;
-    const primaryRando = getRandomColor();
+    const primaryRando = getRandomColor(usedColors);
+    usedColors.push(primaryRando);
     html += `<input type="color" id="primary-color${index}" value="${primaryRando}" onChange="checkTeamEntries(${index})">`
   
     html += `<tr><td style="text-align:right;width:30%;">`;
     html += `Secondary Color for team tile:`;
     html += `</td><td>`;
-    const secondaryRando = getRandomColor(primaryRando);
+    const secondaryRando = getRandomColor(usedColors);
+    usedColors.push(secondaryRando);
     html += `<input type="color" id="secondary-color${index}" value="${secondaryRando}" onChange="checkTeamEntries(${index})">`
     html += `</td></tr><td></td><td>`;
     html += `<i>Click or tap a color swath to select and change color.</i>`
@@ -244,27 +247,35 @@ function checkTeamEntries(index) {
     }
 }
 
-function getRandomColor(notThisOne) {
-    let colors = [`#FFFFFF`,
-        `#C0C0C0`,
-        `#808080`,
-        `#000000`,
-        `#FF0000`,
-        `#800000`,
-        `#FFFF00`,
-        `#808000`,
-        `#00FF00`,
-        `#008000`,
-        `#00FFFF`,
-        `#008080`,
-        `#0000FF`,
-        `#000080`,
-        `#FF00FF`,
-        `#800080`,
-        `#8B4513`,
-        `#FF8C00`,
-        `#FF69B4`,];
-    colors = colors.filter((a) => a !== notThisOne);
+function getRandomColor(notOneOfThese) {
+    let colors = [
+        "#FF0000",  // red
+        "#0000FF",  // blue
+        "#008000",  // green
+        "#FFFF00",  // yellow
+        "#FFA500",  // orange
+        "#800080",  // purple
+        "#FFFFFF",  // white
+        "#000000",  // black
+        "#808080",  // gray
+        "#000080",  // navy
+        "#800000",  // maroon
+        "#FFD700",  // gold
+        "#C0C0C0",  // silver
+        "#A52A2A",  // brown
+        "#00BFFF",  // deep sky blue
+        "#9370DB",  // medium purple
+        "#FF6347",  // tomato
+        "#008080",  // teal
+        "#FFC0CB",  // pink
+        "#FF7F50",  // coral
+        "#3CB371",  // medium sea green
+        "#4682B4",  // steel blue
+        "#FFFFE0",  // light yellow
+        "#BC8F8F"   // rosy brown
+      ];
+    
+    colors = colors.filter(value => !notOneOfThese.includes(value));
     var color = colors[Math.floor(Math.random() * colors.length)];
     return color;
 }
