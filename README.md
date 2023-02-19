@@ -14,6 +14,11 @@ Score Keeper JS is a Node application that allows users to keep track of scores 
 * As many as 8 or as few as 2 teams/players can be tracked.
 * Web based screens equally at home on phone or PC based browser.
 
+A couple screenshots from the same game on 2 different browsers
+
+![Example screenshot](/screenshots/desktop.png "Desktop")
+![Example screenshot](/screenshots/phone.png.png "Phone")
+
 ## Dependencies
 
 Score Keeper JS has only one production dependency, which is:
