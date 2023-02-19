@@ -12,6 +12,7 @@ Score Keeper JS is a Node application that allows users to keep track of scores 
 * Viewer mode: Users who are not the score-keeper can only view the scores and not change them.
 * Messaging: Users can send group messages to all other users.
 * As many as 8 or as few as 2 teams/players can be tracked.
+* Web based screens equally at home on phone or PC based browser.
 
 ## Dependencies
 
