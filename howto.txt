@@ -1,0 +1,59 @@
+068092817236.dkr.ecr.us-east-1.amazonaws.com/scorekeeper
+
+//-- These commands get the docker image built and uploaded to the container registry
+docker build -t scorekeeper:latest .
+docker run -dp 127.0.0.1:3000:3000 scorekeeper 
+
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 068092817236.dkr.ecr.us-east-1.amazonaws.com
+docker tag scorekeeper:latest 068092817236.dkr.ecr.us-east-1.amazonaws.com/scorekeeper:latest 
+docker push 068092817236.dkr.ecr.us-east-1.amazonaws.com/scorekeeper:latest
+
+installed the CDK for javascript (this builds cloud formation) - see some of the permissions had to add below to the local client IAM user.
+
+had to bootstrap the cdk '''cdk bootstrap aws://068092817236/us-east-1'''
+
+Creating container, task and service. The task defines the service and the service is the running task.
+
+With node, docker and CDK installed can get a docker container to ECR and then run the CDK deploy in the MyWidgetService folder. This will build out the service. Then hook the route53 up to it.
+
+This is work in progress - as of today have the deploy to container working with container, task and service. Next need to try an get the stuff to connect, route53, ssl, etc.
+
+
+
+
+Installed CDK - required update of node/npm version and updating the policy of my user. Basic power user (aws policy) and created a policy and added to the user with this access:
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "iam:CreateRole",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:DetachRolePolicy",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:DeleteRole",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:PutRolePolicy",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:AttachRolePolicy",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:DeleteRolePolicy",
+            "Resource": "*"
+        }
+    ]
+}

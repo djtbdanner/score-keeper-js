@@ -5,7 +5,7 @@ const path = require('path');
 
 const content = "/public";
 const allowedFiles = getContentFiles(content);
-const port = 8080;
+const port = 80;
 
 app = http.createServer(function (req, res) {
   let url = req.url;
