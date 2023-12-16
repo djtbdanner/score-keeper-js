@@ -73,3 +73,90 @@ Score Keeper JS is released under the ISC License. See [LICENSE](https://opensou
 ## Demo
 
 Here is a link to the project demo [demo](https://www.youtube.com/watch?v=JLjUdUwpNX0) 
+
+
+# How to
+
+Initially this was deployed to EC2 using elastic beanstalk. Pretty easy, zip up the application into a zip file. Create an environment running node and deploy the zip file.
+
+## Container
+
+Moved to containers to save money (hopefully) and learn a bit about Docker, contianers, CDK and cloudformation. Add docker file, and cdk code to build deploy the uploaded resource. Deploying would be two steps.
+* Docker up the app and upload the container to ECR
+* Deploy the container using SDK (development kit to get cloud formation process in place)
+
+### Containerize the app and upload to ECR
+
+Will need Node, Docker, AWS SDK, and local AWS SDK creds.
+
+AWS creds - create a user and give that user the rights to do the things and get the creds locally
+
+```
+# containerize the app (see the Dockerfile for details on what the build does)
+docker build -t scorekeeper:latest .
+
+# this will test the app runs in the docker container
+docker run -dp 127.0.0.1:3000:3000 scorekeeper 
+
+# This gets the right for local to upload the image to ECR, tags the image and uploads it to ECR
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 068092817236.dkr.ecr.us-east-1.amazonaws.com
+docker tag scorekeeper:latest 068092817236.dkr.ecr.us-east-1.amazonaws.com/scorekeeper:latest 
+docker push 068092817236.dkr.ecr.us-east-1.amazonaws.com/scorekeeper:latest
+
+```
+
+For now do the docker container stuff as one step, then deploy the code using the SDK as the next step.
+
+### Deploy container, elb, dns etc.
+
+From the command line (does not work in Powershell for some reason), navigate to the MyWidgetService folder and run 
+```cdk deploy``` other commands ```cdk destroy``` to destroy the stuff built by the deploy command and ```cdk synth``` will
+test the code and build a cloudformation yaml for review.
+
+The above step assumes the CDK is working and in the folder MyWidgetService (name subject to change). Some of the stuff that was needed to get the CDK up and running.
+
+* Install the CDK for javascript (this builds cloud formation). Additonal permissions were required for the user, see some of the permissions had to add below to the local client IAM user.
+
+* Bootstrap the CDK (so it knows where stuff will go) '''cdk bootstrap aws://068092817236/us-east-1'''
+
+* See the ***service.js file for all of the stuff that has to be done to get the container running. Note that there is an assumption that the container will already be uploaded to the name and in ECR (Elastic container registry)
+
+
+Installed CDK - required update of node/npm version and updating the policy of my user. Basic power user (aws policy) and created a policy and added to the user with this access:
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "iam:CreateRole",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:DetachRolePolicy",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:DeleteRole",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:PutRolePolicy",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:AttachRolePolicy",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:DeleteRolePolicy",
+            "Resource": "*"
+        }
+    ]
+}
+```
