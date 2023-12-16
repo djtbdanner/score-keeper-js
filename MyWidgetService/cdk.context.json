@@ -48,5 +48,9 @@
         ]
       }
     ]
+  },
+  "hosted-zone:account=068092817236:domainName=davedanner.com:region=us-east-1": {
+    "Id": "/hostedzone/Z1E9U8JFYG2HH9",
+    "Name": "davedanner.com."
   }
 }
