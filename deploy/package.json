@@ -2,7 +2,7 @@
   "name": "my_widget_service",
   "version": "0.1.0",
   "bin": {
-    "my_widget_service": "bin/my_widget_service.js"
+    "cdk_deploy": "bin/cdk_deploy.js"
   },
   "scripts": {
     "build": "echo \"The build step is not required when using JavaScript!\" && exit 0",

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const cdk = require('aws-cdk-lib');
-const { MyWidgetServiceStack } = require('../lib/my_widget_service-stack');
+const { CDKDeployStack } = require('../lib/cdk_deploy_stack');
 
 const accountId = '068092817236';
 const region = 'us-east-1';
@@ -13,9 +13,9 @@ env = {
   appName
 };
 
-
 const app = new cdk.App();
-new MyWidgetServiceStack(app, 'scorekeeper', {env
+new CDKDeployStack(app, appName, {env});
+
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
@@ -29,4 +29,4 @@ new MyWidgetServiceStack(app, 'scorekeeper', {env
   // env: { account: '123456789012', region: 'us-east-1' },
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
-});
+

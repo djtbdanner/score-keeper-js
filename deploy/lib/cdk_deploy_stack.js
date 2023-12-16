@@ -17,7 +17,7 @@ const { Peer, Port, Vpc, SecurityGroup } = require('aws-cdk-lib/aws-ec2');
 const { RemovalPolicy, Stack } = require('aws-cdk-lib');
 const { Role } = require('aws-cdk-lib/aws-iam');
 
-class MyWidgetServiceStack extends Stack {
+class CDKDeployStack extends Stack {
   constructor(scope, id, props) {
     super(scope, id, props);
     // Retrieve the default VPC
@@ -142,4 +142,4 @@ class MyWidgetServiceStack extends Stack {
   }
 }
 
-module.exports = { MyWidgetServiceStack }
+module.exports = { CDKDeployStack }
