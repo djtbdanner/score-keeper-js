@@ -76,7 +76,7 @@ function timerChange(roomName, useTimer, totalSeconds) {
 
 
 socket.on('play-sound', (data) => {
-    bugle_tune.play();
+    beeper_emergency_call.play();
 });
 
 function asyncEmit(eventName, data) {

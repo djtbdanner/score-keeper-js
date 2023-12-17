@@ -12,12 +12,12 @@ async function buildMenu() {
     if (ROOM_OWNER) {
         html += `<a class ="menuItem" onClick="resetScore()">Reset Score</a></br>`;
         html += `<hr>`;
-        if (!USE_TIMER){
+        if (!USE_TIMER) {
             html += `<a class ="menuItem" onClick="updateTimer()">Add Timer</a></br>`;
             html += `<hr>`;
         } else {
             html += `<a class ="menuItem" onClick="updateTimer()">Update Timer</a></br>`;
-            html += `<hr>`;           
+            html += `<hr>`;
         }
     }
     if (!document.fullscreenElement) {
@@ -39,11 +39,11 @@ async function buildMenu() {
     createAndAppendDiv(html, 'default', false);
 }
 
-var bugle_tune = new Audio('/sounds/bugle_tune.mp3');
+var beeper_emergency_call = new Audio('/sounds/beeper_emergency_call.mp3');
 
 function createAndAppendDiv(html, id, isFullScreen) {
     let div = document.getElementById(id);
-    if (div){
+    if (div) {
         destroyNode(div);
         div = undefined;
     }
@@ -77,14 +77,19 @@ function destroyById(id) {
 }
 
 function resetScore() {
-    for (d = 0; d < 8; d++) {
-        const t = document.getElementById(`scoretext${d}`);
-        if (!t) {
-            break;
+    const doIt = confirm(`Reset score to all 0's?`);
+    if (doIt) {
+        for (d = 0; d < 8; d++) {
+            const t = document.getElementById(`scoretext${d}`);
+            if (!t) {
+                break;
+            }
+            t.innerHTML = `0`;
         }
-        t.innerHTML = `0`;
+        buildSendScoreFromScreen();
+    } else {
+        destroyById('menu');
     }
-    buildSendScoreFromScreen();
 }
 
 function closeFullscreen() {
@@ -195,11 +200,11 @@ function updateTimer() {
     html += `<input type="number" maxlength="2" id="timer-seconds" value = "0" min="0" max="60" onChange="checkTimerAddButton()"/>`;
     html += `<br>`;
     html += `minutes:seconds`;
-    html += `<br>`;  
-    buttonName = USE_TIMER?`Update Timer`:`Add Timer`;
+    html += `<br>`;
+    buttonName = USE_TIMER ? `Update Timer` : `Add Timer`;
     html += `<input type="button" value="Cancel" id="cancel-timer-button" onClick="javascript:destroyById('add-timer')"/>`;
     html += `<input type="submit" value="${buttonName}" disabled="true" id="add-timer-button" formaction="javascript:addTimerButtonClick()"/>`;
-    if (USE_TIMER){
+    if (USE_TIMER) {
         html += `<input type="button" value="Remove Timer" id="remove-timer-button" onClick="javascript:removeTimerButtonClick()"/>`;
     }
     html += `</div></form>`;
@@ -207,27 +212,27 @@ function updateTimer() {
     document.getElementById(`timer-minutes`).focus();
 }
 
-function checkTimerAddButton(){
+function checkTimerAddButton() {
     document.getElementById(`add-timer-button`).disabled = true;
-    if (document.getElementById(`timer-minutes`).value  &&  document.getElementById(`timer-seconds`).value){
-        if (parseInt(document.getElementById(`timer-minutes`).value, 10) > 0 || parseInt(document.getElementById(`timer-seconds`).value, 10) > 0 ){
+    if (document.getElementById(`timer-minutes`).value && document.getElementById(`timer-seconds`).value) {
+        if (parseInt(document.getElementById(`timer-minutes`).value, 10) > 0 || parseInt(document.getElementById(`timer-seconds`).value, 10) > 0) {
             document.getElementById(`add-timer-button`).disabled = false;
         }
     }
 }
 
-function addTimerButtonClick(){
+function addTimerButtonClick() {
     USE_TIMER = true;
     const minutes = document.getElementById(`timer-minutes`).value;
     const seconds = document.getElementById(`timer-seconds`).value
-    TOTAL_SECONDS= parseInt(minutes, 10) * 60 + parseInt(seconds, 10);
+    TOTAL_SECONDS = parseInt(minutes, 10) * 60 + parseInt(seconds, 10);
     localStorage.setItem('use-timer', USE_TIMER);
     localStorage.setItem('total-seconds', TOTAL_SECONDS);
     timerChange(ROOM_NAME, true, TOTAL_SECONDS);
     rebuildGameFromLocalStorage();
 }
 
-function removeTimerButtonClick(){
+function removeTimerButtonClick() {
     USE_TIMER = false;
     TOTAL_SECONDS = 0;
     localStorage.setItem('use-timer', USE_TIMER);

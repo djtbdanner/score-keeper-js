@@ -199,13 +199,6 @@ function addListeners(hasTimer) {
         div.addEventListener('dragend', (event) => {
             dragEndProcessor(event);
         });
-        scoretxt.addEventListener('dragstart', (event) => {
-            dragStartProcessor(event);
-        });
-
-        scoretxt.addEventListener('dragend', (event) => {
-            dragEndProcessor(event);
-        });
 
         div.addEventListener('touchstart', (event) => {
             var touchLocation = event.changedTouches[0];
@@ -300,13 +293,13 @@ function dragEndProcessor(event) {
         return;
     }
     let { yLoc, xLoc } = getXy(event);
-    let destination = document.elementFromPoint(xLoc, yLoc);
+    let destination = document.elementFromPoint(Number(xLoc), Number(yLoc));
+    console.log(destination);
     if (!isDivOrScore(destination)) {
         return;
     }
     let destinationDivNum = getIdSuffix(destination);
     let sourceDivNum = getIdSuffix(sourceDiv);
-
     let screenChange = false;
     if (destinationDivNum !== sourceDivNum) {
         swapDivs(destination, sourceDiv);
@@ -332,14 +325,14 @@ function dragEndProcessor(event) {
 function getXy(event) {
     let xLoc = event.pageX;
     let yLoc = event.pageY;
-    let userAgent = navigator.userAgent;
-    if (userAgent) {
-        // I understand this is a bug in firefox
-        if (userAgent.includes("Firefox") && userAgent.includes("Windows")) {
-            xLoc = event.screenX;
-            yLoc = event.screenY;
-        }
-    }
+    // let userAgent = navigator.userAgent;
+    // if (userAgent) {
+    //     // I understand this is a bug in firefox
+    //     if (userAgent.includes("Firefox") && userAgent.includes("Windows")) {
+    //         xLoc = event.screenX;
+    //         yLoc = event.screenY;
+    //     }
+    // }
     return { yLoc, xLoc };
 }
 

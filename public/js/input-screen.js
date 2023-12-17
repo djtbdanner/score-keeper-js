@@ -19,7 +19,7 @@ async function processRoomAdded() {
     if (document.getElementById(`initial-screen`)) {
         await buildInitialScreen();
     } else {
-        console.log('someone added another game');
+        // console.log('someone added another game');
     }
 }
 
@@ -35,40 +35,31 @@ async function buildInitialScreen() {
     html += `<h2>Score Keeper</h2>`;
     html += `<table cellpadding="0" cellspacing="0" width="100%" border="0">`;
 
-    html += `<tr><td colspan="2" style = "text-align:center;">`;
-    html += `<p>Choose a name for the game, number of points per score (e.g. basketball would be 2) and, optionally, create a timer.</p>`;
-    html += `</td></tr>`;
+    // html += `<tr><td colspan="2" style = "text-align:center;">`;
+    // // html += `<p>Choose a name for the game, number of points per score (e.g. basketball would be 2) and, optionally, create a timer.</p>`;
+    // html += `</td></tr>`;
 
-    html += `<tr><td style="text-align:right;width:30%;">`;
-    html += `Name of the game: `;
+    html += `<tr><td style="width:30%;">`;
+    html += `Game name: `;
     html += `</td><td>`;
     html += `<input type="text" maxlength="20" id="game-name" placeholder="GameName" onKeyUp="shouldShowSubmitButton()" autofocus />`;
     html += `</td></tr>`;
 
-    html += `<tr><td style="text-align:right;">`;
-    html += `Points per goal or score: `;
+    html += `<tr><td>`;
+    html += `Score points: `;
     html += `</td><td>`;
-    html += `<input type="number" maxlength="3" id="goal-points" value = "1" min="1" max="100" />`;
+    html += `<input type="number" maxlength="3" id="goal-points" value = "1" min="1" max="100" width="3"/>`;
     html += `</td></tr>`;
 
-    html += `<tr><td style="text-align:right;">`;
-    html += `Set a game timer?: `;
-    html += `</td><td>`;
-    html += `<input type="checkbox" id="timer-checkbox" onclick="showTimerSpan()"/>`;
-    html += `</td></tr>`;
-
-    html += `<tr><td style="text-align:right;width:30%;">`;
-    html += `<span style="visibility:hidden" id= "time-label">Timer (minutes:seconds):</span>`;
+    html += `<tr><td>`;
+    html += `Timer?: <input type="checkbox" id="timer-checkbox" onclick="showTimerSpan()"/>`;
     html += `</td><td>`;
     html += `<span style="visibility:hidden" id= "time-fields"><input type="number" maxlength="3" disabled id="timer-minutes" value = "0" min="0" max="999" onChange="shouldShowSubmitButton()" />:<input type="number" disabled maxlength="2" id="timer-seconds" value = "0" min="0" max="60" onChange="shouldShowSubmitButton()" /></span>`;
     html += `</td></tr>`;
 
     html += `<tr><td colspan="2" style = "text-align:center;">`;
+    html += `<input type="submit" id="add-player-button" disabled="true" value="OK" formaction="javascript:setRoomAddPlayer();" /><br/>`;
     html += `<span id = "game-msg-span">&nbsp</span>`;
-    html += `</td></tr>`;
-
-    html += `<tr><td colspan="2" style = "text-align:center;">`;
-    html += `<br><input type="submit" id="add-player-button" disabled="true" value="Add Team or Player" formaction="javascript:setRoomAddPlayer();" />`;
     html += `</td></tr>`;
 
     html += roomsList;
@@ -82,19 +73,19 @@ function showTimerSpan() {
     const check = document.getElementById(`timer-checkbox`);
     const minutesBox = document.getElementById(`timer-minutes`);
     const secondsBox = document.getElementById(`timer-seconds`);
-    const theSpan = document.getElementById(`time-label`)
+    // const theSpan = document.getElementById(`time-label`)
     const theSpanFields = document.getElementById(`time-fields`)
     if (check.checked) {
         minutesBox.disabled = false;
         secondsBox.disabled = false;
-        theSpan.style.visibility = `visible`;
+        // theSpan.style.visibility = `visible`;
         theSpanFields.style.visibility = `visible`
     } else {
         minutesBox.value = 0;
         secondsBox.value = 0;
         minutesBox.disabled = true;
         secondsBox.disabled = true;
-        theSpan.style.visibility = `hidden`;
+        // theSpan.style.visibility = `hidden`;
         theSpanFields.style.visibility = `hidden`
     }
     shouldShowSubmitButton();
@@ -200,32 +191,31 @@ function buildAddTeamForm(index) {
     let html = ``;
     // html += `<div id="addDiv${index}" class = "modal"><form>`;
     html += `<form id="addDiv${index}"> `;
-    html += `<table style = "position:absolute;left:0;top:;" cellpadding="5" cellspacing="0" width="100%" border="0">`;
-    html += `<tr><td style = "text-align:center;" colspan = "2">`;
-    html += `<p>Add ${index + 1}<sup>${index === 0 ? "st" : index === 1 ? "nd" : index === 2 ? "rd" : "th"}</sup> player or team info for game: ${gameName}</p>`
-    html += `</td></tr>`;
-    html += `<tr><td style="text-align:right;width:30%;">`;
-    html += `Team or player name:`;
+    // html += `<h2>Score Keeper</h2>`;   
+    html += `<h2 style = "position:absolute;left:0;top:0;width:100%;">Score Keeper</h2>`;
+    html += `<table style = "position:absolute;left:0px;top:5.5vh;" cellpadding="5" cellspacing="0" width="100%" border="0">`;
+    // html += `<tr><td colspan = "2">`;
+    // // html += `<p>Add ${index + 1}<sup>${index === 0 ? "st" : index === 1 ? "nd" : index === 2 ? "rd" : "th"}</sup> player or team info for game: ${gameName}</p>`
+    // html += `</td></tr>`;
+    html += `<tr><td style="width:38%;">`;
+    html += `${index + 1}<sup>${index === 0 ? "st" : index === 1 ? "nd" : index === 2 ? "rd" : "th"}</sup> Player Name:`;
     html += `</td><td>`;
     html += `<input type="input" maxlength="12" id="in-teamName${index}" placeholder="${index + 1}${index === 0 ? "st" : index === 1 ? "nd" : index === 2 ? "rd" : "th"} Name" autofocus onKeyUp="checkTeamEntries(${index})"/>`;
     html += `</td></tr>`;
-    html += `<tr><td style="text-align:right;width:30%;">`;
-    html += `Primary Color for team tile:`;
+    html += `<tr><td style="width:30%;">`;
+    html += `Primary color: `;
     html += `</td><td>`;
     const color = getRandomColors(usedColors)
     const primaryRando = color.background;
     secondaryRando = color.number;
     usedColors.push(color);
     html += `<input type="color" id="primary-color${index}" value="${primaryRando}" onChange="checkTeamEntries(${index})">`
-
-    html += `<tr><td style="text-align:right;width:30%;">`;
-    html += `Secondary Color for team tile:`;
+    html += `<tr><td style="width:30%;">`;
+    html += `Secondary color: `;
     html += `</td><td>`;
-    // const secondaryRando = getRandomColor(usedColors);
-    // usedColors.push(secondaryRando);
     html += `<input type="color" id="secondary-color${index}" value="${secondaryRando}" onChange="checkTeamEntries(${index})">`
-    html += `</td></tr><td></td><td>`;
-    html += `<i>Click or tap a color swath to select and change color.</i>`
+    html += `</td></tr><td colspan="2">`;
+    html += `<i>Select color to change it.</i>`
     html += `</td></tr>`;
     html += `<tr><td>`;
     html += `<tr><td style = "text-align:center;" colspan = "2">`;
@@ -250,37 +240,23 @@ function checkTeamEntries(index) {
 }
 
 function getRandomColors(notOneOfThese) {
-    const nflTeamColors = [
-        { background: '#000000', number: '#A5ACAF' }, // Black background, light gray number
-        { background: '#000000', number: '#A71930' }, // Black background, red number
-        { background: '#000000', number: '#FFB612' }, // Black background, yellow number
-        { background: '#00143F', number: '#C83803' }, // Dark blue background, orange number
-        { background: '#002244', number: '#69BE28' }, // Dark blue background, green number
-        { background: '#002244', number: '#FFFFFF' }, // Dark blue background, white number
-        { background: '#002C5F', number: '#FFFFFF' }, // Blue background, white number
-        { background: '#00338D', number: '#C8102E' }, // Blue background, red number
-        { background: '#004953', number: '#A5ACAF' }, // Teal background, light gray number
-        { background: '#0085CA', number: '#000000' }, // Light blue background, black number
-        { background: '#008E97', number: '#FC4C02' }, // Light blue background, orange number
-        { background: '#03202F', number: '#A71930' }, // Dark green background, red number
-        { background: '#041E42', number: '#FFFFFF' }, // Dark green background, white number
-        { background: '#0B2265', number: '#A71930' }, // Navy blue background, red number
-        { background: '#203731', number: '#FFB612' }, // Dark green background, yellow number
-        { background: '#241773', number: '#FFFFFF' }, // Purple background, white number
-        { background: '#311D00', number: '#FF3C00' }, // Brown background, orange number
-        { background: '#4F2683', number: '#FFC62F' }, // Dark purple background, yellow number
-        { background: '#97233F', number: '#FFB612' }, // Maroon background, yellow number
-        { background: '#AA0000', number: '#B3995D' }, // Scarlet red background, tan number
+    const teamColors = [
+        { background: '#041C2C', number: '#C83803' }, // Navy , orange
+        { background: '#479829', number: '#FDE100' }, // Green, yellow
+        { background: '#FDE100', number: '#479829' }, // Yellow background, green number
+        { background: '#000000', number: '#F1BE48' }, // Black and gold ia
+        { background: '#F1BE48', number: '#000000' }, // gold and black ia
+        { background: '#8C1515', number: '#F1BE48' }, // Cardinal red background, gold number ia state
+        { background: '#503672', number: '#F1BE48' }, // Purple background, gold number uni
+        { background: '#000000', number: '#FF0000' }, // Black background, red number adm
+        { background: '#0E3386', number: '#CC3433' }, // blue background, red number cubs
+        { background: '#311D00', number: '#FF3C00' }, // brown background, orange number browns
+        { background: '#FFFFF4', number: '#000000' }, // off white and black
+        { background: '#000000', number: '#FFFFF4' }, // black and off white
         { background: '#D3BC8D', number: '#000000' }, // Bronze background, black number
-        { background: '#D50A0A', number: '#FF7900' }, // Cardinal red background, orange number
-        { background: '#E31837', number: '#FFFFFF' }, // Bright red background, white number
-        { background: '#FF5733', number: '#2C3E50' }, // Orange background, dark gray number
-        { background: '#FFC300', number: '#4CAF50' }, // Yellow background, green number
-        { background: '#8C1515', number: '#F1BE48' }, // Cardinal red background, gold number
-        { background: '#503672', number: '#FFD100' }, // Purple background, gold number
-        { background: '#000000', number: '#FF0000' }, // Black background, red number
+        // { background: '#FF0000', number: '#000000' }, // red black
     ];
-    const colors = nflTeamColors.filter((color) => {
+    const colors = teamColors.filter((color) => {
         return !notOneOfThese.some((item) => {
           // Check if any item in yourListOfObjects matches the current color
           return (
