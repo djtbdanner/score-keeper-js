@@ -87,6 +87,7 @@ class CDKDeployStack extends Stack {
         streamPrefix: `${props.env.appName}Service`,
       }),
       removalPolicy: RemovalPolicy.DESTROY,
+      forceNewDeployment: true,
     });
 
     // Application Load Balancer
