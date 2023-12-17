@@ -55,7 +55,7 @@ async function buildInitialScreen() {
     html += `Set a game timer?: `;
     html += `</td><td>`;
     html += `<input type="checkbox" id="timer-checkbox" onclick="showTimerSpan()"/>`;
-    html += `</td></tr>`; 
+    html += `</td></tr>`;
 
     html += `<tr><td style="text-align:right;width:30%;">`;
     html += `<span style="visibility:hidden" id= "time-label">Timer (minutes:seconds):</span>`;
@@ -74,39 +74,39 @@ async function buildInitialScreen() {
     html += roomsList;
 
     html += `</table>`;
-    html+=`</form>`;
+    html += `</form>`;
     createAndAppendDiv(html, 'default', false);
 }
 
-function showTimerSpan(){
+function showTimerSpan() {
     const check = document.getElementById(`timer-checkbox`);
     const minutesBox = document.getElementById(`timer-minutes`);
     const secondsBox = document.getElementById(`timer-seconds`);
     const theSpan = document.getElementById(`time-label`)
     const theSpanFields = document.getElementById(`time-fields`)
-    if (check.checked){
+    if (check.checked) {
         minutesBox.disabled = false;
         secondsBox.disabled = false;
-        theSpan.style.visibility=`visible`;
-        theSpanFields.style.visibility=`visible`
+        theSpan.style.visibility = `visible`;
+        theSpanFields.style.visibility = `visible`
     } else {
         minutesBox.value = 0;
         secondsBox.value = 0;
         minutesBox.disabled = true;
         secondsBox.disabled = true;
-        theSpan.style.visibility=`hidden`;
-        theSpanFields.style.visibility=`hidden`
+        theSpan.style.visibility = `hidden`;
+        theSpanFields.style.visibility = `hidden`
     }
     shouldShowSubmitButton();
 }
 
 // check some time is set if timer is selected
-function isTimerSetOrNotChosen(){
+function isTimerSetOrNotChosen() {
     const check = document.getElementById(`timer-checkbox`);
     const minutesBox = document.getElementById(`timer-minutes`);
     const secondsBox = document.getElementById(`timer-seconds`);
-    if (check.checked){
-        if (parseInt(minutesBox.value, 10) + parseInt(secondsBox.value, 10) === 0){
+    if (check.checked) {
+        if (parseInt(minutesBox.value, 10) + parseInt(secondsBox.value, 10) === 0) {
             return false;
         }
     }
@@ -121,13 +121,13 @@ function rebuildGameFromLocalStorage() {
     ROOM_OWNER = true;
     POINTS_PER_TAP = localStorage.getItem(`points-per-tap`) || 1;
 
-    USE_TIMER = localStorage.getItem('use-timer')===`true`;
+    USE_TIMER = localStorage.getItem('use-timer') === `true`;
     TOTAL_SECONDS = localStorage.getItem('total-seconds');
     const scores = JSON.parse(storedScores);
     sendRoomMessage(ROOM_NAME, `Score keeper reconnected to ${ROOM_NAME}.`);
 
     let hasTimer = false;
-    if (USE_TIMER){
+    if (USE_TIMER) {
         hasTimer = true;
     }
 
@@ -143,7 +143,7 @@ function setRoomAddPlayer() {
     USE_TIMER = document.getElementById(`timer-checkbox`).checked;
     const minutes = document.getElementById(`timer-minutes`).value;
     const seconds = document.getElementById(`timer-seconds`).value
-    TOTAL_SECONDS= parseInt(minutes, 10) * 60 + parseInt(seconds, 10);
+    TOTAL_SECONDS = parseInt(minutes, 10) * 60 + parseInt(seconds, 10);
 
     destroyById('initial-screen');
     addPlayerOrTeam(0);
@@ -202,25 +202,27 @@ function buildAddTeamForm(index) {
     html += `<form id="addDiv${index}"> `;
     html += `<table style = "position:absolute;left:0;top:;" cellpadding="5" cellspacing="0" width="100%" border="0">`;
     html += `<tr><td style = "text-align:center;" colspan = "2">`;
-    html += `<p>Add ${index + 1}<sup>${index===0?"st":index===1?"nd":index===2?"rd":"th"}</sup> player or team info for game: ${gameName}</p>`
+    html += `<p>Add ${index + 1}<sup>${index === 0 ? "st" : index === 1 ? "nd" : index === 2 ? "rd" : "th"}</sup> player or team info for game: ${gameName}</p>`
     html += `</td></tr>`;
     html += `<tr><td style="text-align:right;width:30%;">`;
     html += `Team or player name:`;
     html += `</td><td>`;
-    html += `<input type="input" maxlength="12" id="in-teamName${index}" placeholder="${index + 1}${index===0?"st":index===1?"nd":index===2?"rd":"th"} Name" autofocus onKeyUp="checkTeamEntries(${index})"/>`;
+    html += `<input type="input" maxlength="12" id="in-teamName${index}" placeholder="${index + 1}${index === 0 ? "st" : index === 1 ? "nd" : index === 2 ? "rd" : "th"} Name" autofocus onKeyUp="checkTeamEntries(${index})"/>`;
     html += `</td></tr>`;
     html += `<tr><td style="text-align:right;width:30%;">`;
     html += `Primary Color for team tile:`;
     html += `</td><td>`;
-    const primaryRando = getRandomColor(usedColors);
-    usedColors.push(primaryRando);
+    const color = getRandomColors(usedColors)
+    const primaryRando = color.background;
+    secondaryRando = color.number;
+    usedColors.push(color);
     html += `<input type="color" id="primary-color${index}" value="${primaryRando}" onChange="checkTeamEntries(${index})">`
-  
+
     html += `<tr><td style="text-align:right;width:30%;">`;
     html += `Secondary Color for team tile:`;
     html += `</td><td>`;
-    const secondaryRando = getRandomColor(usedColors);
-    usedColors.push(secondaryRando);
+    // const secondaryRando = getRandomColor(usedColors);
+    // usedColors.push(secondaryRando);
     html += `<input type="color" id="secondary-color${index}" value="${secondaryRando}" onChange="checkTeamEntries(${index})">`
     html += `</td></tr><td></td><td>`;
     html += `<i>Click or tap a color swath to select and change color.</i>`
@@ -247,35 +249,46 @@ function checkTeamEntries(index) {
     }
 }
 
-function getRandomColor(notOneOfThese) {
-    let colors = [
-        "#FF0000",  // red
-        "#0000FF",  // blue
-        "#008000",  // green
-        "#FFFF00",  // yellow
-        "#FFA500",  // orange
-        "#800080",  // purple
-        "#FFFFFF",  // white
-        "#000000",  // black
-        "#808080",  // gray
-        "#000080",  // navy
-        "#800000",  // maroon
-        "#FFD700",  // gold
-        "#C0C0C0",  // silver
-        "#A52A2A",  // brown
-        "#00BFFF",  // deep sky blue
-        "#9370DB",  // medium purple
-        "#FF6347",  // tomato
-        "#008080",  // teal
-        "#FFC0CB",  // pink
-        "#FF7F50",  // coral
-        "#3CB371",  // medium sea green
-        "#4682B4",  // steel blue
-        "#FFFFE0",  // light yellow
-        "#BC8F8F"   // rosy brown
-      ];
-    
-    colors = colors.filter(value => !notOneOfThese.includes(value));
+function getRandomColors(notOneOfThese) {
+    const nflTeamColors = [
+        { background: '#000000', number: '#A5ACAF' }, // Black background, light gray number
+        { background: '#000000', number: '#A71930' }, // Black background, red number
+        { background: '#000000', number: '#FFB612' }, // Black background, yellow number
+        { background: '#00143F', number: '#C83803' }, // Dark blue background, orange number
+        { background: '#002244', number: '#69BE28' }, // Dark blue background, green number
+        { background: '#002244', number: '#FFFFFF' }, // Dark blue background, white number
+        { background: '#002C5F', number: '#FFFFFF' }, // Blue background, white number
+        { background: '#00338D', number: '#C8102E' }, // Blue background, red number
+        { background: '#004953', number: '#A5ACAF' }, // Teal background, light gray number
+        { background: '#0085CA', number: '#000000' }, // Light blue background, black number
+        { background: '#008E97', number: '#FC4C02' }, // Light blue background, orange number
+        { background: '#03202F', number: '#A71930' }, // Dark green background, red number
+        { background: '#041E42', number: '#FFFFFF' }, // Dark green background, white number
+        { background: '#0B2265', number: '#A71930' }, // Navy blue background, red number
+        { background: '#203731', number: '#FFB612' }, // Dark green background, yellow number
+        { background: '#241773', number: '#FFFFFF' }, // Purple background, white number
+        { background: '#311D00', number: '#FF3C00' }, // Brown background, orange number
+        { background: '#4F2683', number: '#FFC62F' }, // Dark purple background, yellow number
+        { background: '#97233F', number: '#FFB612' }, // Maroon background, yellow number
+        { background: '#AA0000', number: '#B3995D' }, // Scarlet red background, tan number
+        { background: '#D3BC8D', number: '#000000' }, // Bronze background, black number
+        { background: '#D50A0A', number: '#FF7900' }, // Cardinal red background, orange number
+        { background: '#E31837', number: '#FFFFFF' }, // Bright red background, white number
+        { background: '#FF5733', number: '#2C3E50' }, // Orange background, dark gray number
+        { background: '#FFC300', number: '#4CAF50' }, // Yellow background, green number
+        { background: '#8C1515', number: '#F1BE48' }, // Cardinal red background, gold number
+        { background: '#503672', number: '#FFD100' }, // Purple background, gold number
+        { background: '#000000', number: '#FF0000' }, // Black background, red number
+    ];
+    const colors = nflTeamColors.filter((color) => {
+        return !notOneOfThese.some((item) => {
+          // Check if any item in yourListOfObjects matches the current color
+          return (
+            item.background === color.background &&
+            item.number === color.number
+          );
+        });
+      });
     var color = colors[Math.floor(Math.random() * colors.length)];
     return color;
 }
@@ -290,11 +303,11 @@ function addTeam(index) {
     html += `<input type="hidden" id="score${index}" value="0" /><br>`;
     html += `<input type="hidden" id="color${index}" value="${primaryColor}" /><br>`;
     html += `<input type="hidden" id="textColor${index}" value="${secondaryColor}" />`;
-    
+
     let fontSize = `8vh`;
-    
+
     var orientation = (screen.orientation || {}).type || screen.mozOrientation || screen.msOrientation;
-    if (orientation && orientation.includes(`portrait`)){
+    if (orientation && orientation.includes(`portrait`)) {
         fontSize = `3vh`;
     }
     const div = document.createElement(`div`);
@@ -344,7 +357,7 @@ function buildAndSendScore() {
 
     }
     let hasTimer = false;
-    if (USE_TIMER){
+    if (USE_TIMER) {
         hasTimer = true;
     }
     scoreChange(ROOM_NAME, scores, true, TOTAL_SECONDS);
