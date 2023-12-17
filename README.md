@@ -89,14 +89,17 @@ Moved to containers to save money (hopefully) and learn a bit about Docker, cont
 
 Will need Node, Docker, AWS SDK, and local AWS SDK creds.
 
-AWS creds - create a user and give that user the rights to do the things and get the creds locally
+AWS creds - create a user and give that user the rights to do the things and get the creds locally.
+
+*** It seems that the version has to be changed for a new deploy. You can change the version when tagging the container/image
 
 ```
 # containerize the app (see the Dockerfile for details on what the build does)
+# Be sure Docker is running
 docker build -t scorekeeper:latest .
 
-# this will test the app runs in the docker container
-docker run -dp 127.0.0.1:3000:3000 scorekeeper 
+# this will test the app runs in the docker container - be sure ports match up
+docker run -dp 127.0.0.1:80:80 scorekeeper 
 
 # This gets the right for local to upload the image to ECR, tags the image and uploads it to ECR
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 068092817236.dkr.ecr.us-east-1.amazonaws.com
@@ -106,6 +109,8 @@ docker push 068092817236.dkr.ecr.us-east-1.amazonaws.com/scorekeeper:latest
 ```
 
 For now do the docker container stuff as one step, then deploy the code using the SDK as the next step.
+
+*** It seems that the version has to be changed for a new deploy. You can change the version when tagging the container/image. This is done when creating the docker image and in the cdk_deploy_stack.js code. If this is not done a deploy will not go because it detects no changes.
 
 ### Deploy container, elb, dns etc.
 
