@@ -80,7 +80,7 @@ io.sockets.on('connect', (socket) => {
 
     socket.on('score-change', (data) => {
         try {
-            console.log(data);
+            console.log(JSON.stringify(data));
             const roomName = data.room;
             const scores = data.scores;
             const isOwner = data.isOwner;
