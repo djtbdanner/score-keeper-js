@@ -160,6 +160,6 @@ function getContentTypeString(fileName) {
     default:
       type = `text/html`;
   }
-  console.log(`Retrieving "${fileName}", as a "${ext}" file, ContentType = ${type}`)
+  // console.log(`Retrieving "${fileName}", as a "${ext}" file, ContentType = ${type}`)
   return type;
 }

@@ -52,7 +52,7 @@ class CDKDeployStack extends Stack {
     });
 
     taskDefinition.addContainer(`${props.env.appName}Container`, {
-      image: ContainerImage.fromRegistry(`${props.env.account}.dkr.ecr.${props.env.region}.amazonaws.com/${props.env.appName}:v1.0.0`),
+      image: ContainerImage.fromRegistry(`${props.env.account}.dkr.ecr.${props.env.region}.amazonaws.com/${props.env.appName}:v1.0.1`),
       portMappings: [{ containerPort: 80 }],
       memoryLimitMiB: 512,
       cpu: 256,

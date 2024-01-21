@@ -294,7 +294,7 @@ function dragEndProcessor(event) {
     }
     let { yLoc, xLoc } = getXy(event);
     let destination = document.elementFromPoint(Number(xLoc), Number(yLoc));
-    console.log(destination);
+    // console.log(destination);
     if (!isDivOrScore(destination)) {
         return;
     }

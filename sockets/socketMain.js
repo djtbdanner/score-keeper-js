@@ -80,6 +80,7 @@ io.sockets.on('connect', (socket) => {
 
     socket.on('score-change', (data) => {
         try {
+            console.log(data);
             const roomName = data.room;
             const scores = data.scores;
             const isOwner = data.isOwner;

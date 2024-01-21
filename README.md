@@ -114,11 +114,14 @@ For now do the docker container stuff as one step, then deploy the code using th
 
 ### Deploy container, elb, dns etc.
 
-From the command line (does not work in Powershell for some reason), navigate to the MyWidgetService folder and run 
+From the command line (does not work in Powershell for some reason), navigate to the deploy folder and run 
 ```cdk deploy``` other commands ```cdk destroy``` to destroy the stuff built by the deploy command and ```cdk synth``` will
 test the code and build a cloudformation yaml for review.
 
-The above step assumes the CDK is working and in the folder MyWidgetService (name subject to change). Some of the stuff that was needed to get the CDK up and running.
+Note: when creating, and deploying the docker image name needs to be unique (Till can find an automatic way, like using the git branch or something). 
+That can be set at the docker creation steps and in the cdk_deploy_stack.js file in the addContainer step. 
+
+The above step assumes the CDK is working and in the folder deploy (name subject to change). Some of the stuff that was needed to get the CDK up and running.
 
 * Install the CDK for javascript (this builds cloud formation). Additonal permissions were required for the user, see some of the permissions had to add below to the local client IAM user.
 
